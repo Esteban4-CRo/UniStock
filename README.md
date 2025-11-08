@@ -111,7 +111,7 @@ Después de ejecutar los seeders, puedes acceder con:
 ## 🗂️ Estructura del Proyecto
 
 ```
-unistock/
+UniStock/
 ├── app/
 │   ├── Models/
 │   ├── Http/
@@ -218,4 +218,4 @@ Si encuentras algún problema o tienes preguntas:
 
 ---
 
-**Desarrollado con ❤️ usando Laravel**
+
