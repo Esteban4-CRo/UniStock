@@ -5,35 +5,38 @@
     <div class="col-lg-8">
         <div class="card">
             <div class="card-header">
-                <h3 class="mb-0"><i class="fas fa-plus-circle"></i> Crear Nuevo Producto</h3>
+                <h3 class="mb-0"><i class="fas fa-edit"></i> Editar Producto</h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('productos.store') }}" method="POST">
+                <form action="{{ route('productos.update', $producto) }}" method="POST">
                     @csrf
+                    @method('PUT')
 
                     <div class="mb-3">
-                        <label for="codigo" class="form-label">Código del Producto * <span class="badge badge-info">Único</span></label>
-                        <input type="text" class="form-control @error('codigo') is-invalid @enderror" id="codigo" name="codigo" value="{{ old('codigo') }}" placeholder="Ej: PROD-001" required>
-                        <small class="text-muted">Este código no podrá ser modificado después</small>
-                        @error('codigo') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                        <label for="codigo" class="form-label">Código del Producto</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="codigo" value="{{ $producto->codigo }}" disabled>
+                            <span class="input-group-text">No editable</span>
+                        </div>
+                        <small class="text-muted d-block mt-2"><i class="fas fa-lock"></i> El código no puede ser modificado</small>
                     </div>
 
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre del Producto *</label>
-                        <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre" name="nombre" value="{{ old('nombre') }}" required>
+                        <input type="text" class="form-control @error('nombre') is-invalid @enderror" id="nombre" name="nombre" value="{{ old('nombre', $producto->nombre) }}" required>
                         @error('nombre') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="3">{{ old('descripcion') }}</textarea>
+                        <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion" rows="3">{{ old('descripcion', $producto->descripcion) }}</textarea>
                         @error('descripcion') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="stock_actual" class="form-label">Stock Inicial *</label>
-                            <input type="number" class="form-control @error('stock_actual') is-invalid @enderror" id="stock_actual" name="stock_actual" value="{{ old('stock_actual', 0) }}" min="0" required>
+                            <label for="stock_actual" class="form-label">Stock *</label>
+                            <input type="number" class="form-control @error('stock_actual') is-invalid @enderror" id="stock_actual" name="stock_actual" value="{{ old('stock_actual', $producto->stock_actual) }}" min="0" required>
                             @error('stock_actual') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                         </div>
 
@@ -41,7 +44,7 @@
                             <label for="precio" class="form-label">Precio *</label>
                             <div class="input-group">
                                 <span class="input-group-text">$</span>
-                                <input type="number" class="form-control @error('precio') is-invalid @enderror" id="precio" name="precio" value="{{ old('precio', 0) }}" step="0.01" min="0" required>
+                                <input type="number" class="form-control @error('precio') is-invalid @enderror" id="precio" name="precio" value="{{ old('precio', $producto->precio) }}" step="0.01" min="0" required>
                             </div>
                             @error('precio') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                         </div>
@@ -51,15 +54,15 @@
                         <label for="estado" class="form-label">Estado *</label>
                         <select class="form-select @error('estado') is-invalid @enderror" id="estado" name="estado" required>
                             <option value="">Seleccionar estado</option>
-                            <option value="activo" {{ old('estado', 'activo') == 'activo' ? 'selected' : '' }}>✓ Activo</option>
-                            <option value="inactivo" {{ old('estado') == 'inactivo' ? 'selected' : '' }}>✗ Inactivo</option>
+                            <option value="activo" {{ old('estado', $producto->estado) == 'activo' ? 'selected' : '' }}>✓ Activo</option>
+                            <option value="inactivo" {{ old('estado', $producto->estado) == 'inactivo' ? 'selected' : '' }}>✗ Inactivo</option>
                         </select>
                         @error('estado') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="d-flex gap-2 pt-3 border-top">
                         <button type="submit" class="btn btn-success flex-grow-1">
-                            <i class="fas fa-save"></i> Guardar Producto
+                            <i class="fas fa-save"></i> Actualizar Producto
                         </button>
                         <a href="{{ route('productos.index') }}" class="btn btn-secondary">
                             <i class="fas fa-times"></i> Cancelar

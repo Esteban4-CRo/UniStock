@@ -10,10 +10,13 @@ class Producto extends Model
     use HasFactory;
 
     protected $fillable = [
+        'codigo',
         'nombre',
         'descripcion',
         'stock_actual',
-        'precio'
+        'precio',
+        'user_id',
+        'estado'
     ];
 
     public function entradas()
@@ -24,5 +27,10 @@ class Producto extends Model
     public function salidas()
     {
         return $this->hasMany(Salida::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

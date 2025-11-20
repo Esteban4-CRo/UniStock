@@ -1,309 +1,222 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniStock - Sistema de Inventario</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        
-        .navbar {
-            background-color: #2c3e50;
-            color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        
-        .navbar-nav {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .navbar-nav a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        
-        .navbar-nav a:hover {
-            background-color: #34495e;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        
-        .stat-label {
-            color: #7f8c8d;
-            margin-top: 0.5rem;
-        }
-        
-        .section {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-        
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            color: #2c3e50;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 0.5rem;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .btn:hover {
-            background-color: #2980b9;
-        }
-        
-        .btn-success {
-            background-color: #27ae60;
-        }
-        
-        .btn-success:hover {
-            background-color: #219a52;
-        }
-        
-        .btn-danger {
-            background-color: #e74c3c;
-        }
-        
-        .btn-danger:hover {
-            background-color: #c0392b;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        
-        th, td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid #ecf0f1;
-        }
-        
-        th {
-            background-color: #f8f9fa;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        
-        .actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 2rem;
-            color: #7f8c8d;
-        }
-    </style>
-</head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-brand">UniStock</div>
-        <div class="navbar-nav">
-            <a href="{{ route('home') }}">Inicio</a>
-            <a href="{{ route('productos.index') }}">Productos</a>
-            <a href="{{ route('entradas.index') }}">Entradas</a>
-            <a href="{{ route('salidas.index') }}">Salidas</a>
-            <a href="{{ route('logout') }}" 
-               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                Cerrar Sesión
-            </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-            </form>
-        </div>
-    </nav>
+@extends('layouts.app')
 
-    <div class="container">
-        <!-- Estadísticas -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">{{ $totalProductos }}</div>
-                <div class="stat-label">Productos Totales</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ $totalEntradas }}</div>
-                <div class="stat-label">Entradas Registradas</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ $totalSalidas }}</div>
-                <div class="stat-label">Salidas Registradas</div>
-            </div>
+@section('content')
+<style>
+/* ---------------------------
+   ANIMACIÓN MASCOTA UNISTOCK
+----------------------------*/
+.mascota-movil {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 110px;
+    height: 110px;
+    z-index: 9999;
+    cursor: pointer;
+    animation: saltar 1s infinite ease-in-out, rotar 6s linear infinite;
+}
+
+.mascota-body {
+    width: 100%;
+    height: 100%;
+    background: #1abc9c;
+    border-radius: 60%;
+    position: relative;
+    box-shadow: 0 0 12px #1abc9c;
+}
+
+/* Ojos */
+.mascota-body::before,
+.mascota-body::after {
+    content: '';
+    position: absolute;
+    top: 35%;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+}
+
+.mascota-body::before { left: 28%; }
+.mascota-body::after { right: 28%; }
+
+/* Boca feliz */
+.mascota-mouth {
+    position: absolute;
+    bottom: 28%;
+    left: 50%;
+    width: 45px;
+    height: 25px;
+    background: transparent;
+    border-bottom: 5px solid #fff;
+    border-radius: 0 0 50px 50px;
+    transform: translateX(-50%);
+}
+
+/* Animación de salto */
+@keyframes saltar {
+    0%   { transform: translateY(0px); }
+    50%  { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Rotación lenta y suave */
+@keyframes rotar {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ---------------------------
+   ESTILOS DEL DASHBOARD
+----------------------------*/
+.dashboard-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dashboard-title i {
+    color: #1abc9c;
+    font-size: 28px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+    color: #fff;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+
+.card-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1abc9c;
+}
+
+.card-label {
+    margin-top: 5px;
+    opacity: 0.7;
+}
+</style>
+
+<div class="container">
+
+    <h1 class="dashboard-title">
+        <i class="fas fa-cube"></i> Panel Principal
+    </h1>
+
+    <!-- Estadísticas -->
+    <div class="dashboard-grid">
+
+        <div class="card">
+            <div class="card-number">{{ $totalProductos }}</div>
+            <div class="card-label">Productos Totales</div>
         </div>
 
-        <!-- Productos Recientes -->
-        <div class="section">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2 class="section-title">Productos Recientes</h2>
-                <a href="{{ route('productos.create') }}" class="btn btn-success">Nuevo Producto</a>
-            </div>
-            
-            @if($productos->count() > 0)
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Stock</th>
-                            <th>Precio</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($productos as $producto)
-                        <tr>
-                            <td>{{ $producto->nombre }}</td>
-                            <td>{{ $producto->stock_actual }}</td>
-                            <td>${{ number_format($producto->precio, 2) }}</td>
-                            <td class="actions">
-                                <a href="{{ route('entradas.create') }}?producto_id={{ $producto->id }}" class="btn">Entrada</a>
-                                <a href="{{ route('salidas.create') }}?producto_id={{ $producto->id }}" class="btn btn-danger">Salida</a>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @else
-                <div class="empty-state">
-                    <p>No hay productos registrados</p>
-                    <a href="{{ route('productos.create') }}" class="btn btn-success">Agregar Primer Producto</a>
-                </div>
-            @endif
+        <div class="card">
+            <div class="card-number">{{ $totalEntradas }}</div>
+            <div class="card-label">Entradas Registradas</div>
         </div>
 
-        <!-- Últimas Entradas -->
-        <div class="section">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2 class="section-title">Últimas Entradas</h2>
-                <a href="{{ route('entradas.create') }}" class="btn">Nueva Entrada</a>
-            </div>
-            
-            @if($entradas->count() > 0)
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Fecha</th>
-                            <th>Motivo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($entradas as $entrada)
-                        <tr>
-                            <td>{{ $entrada->producto->nombre }}</td>
-                            <td>{{ $entrada->cantidad }}</td>
-                            <td>{{ $entrada->created_at->format('d/m/Y H:i') }}</td>
-                            <td>{{ $entrada->motivo ?? 'N/A' }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @else
-                <div class="empty-state">
-                    <p>No hay entradas registradas</p>
-                </div>
-            @endif
+        <div class="card">
+            <div class="card-number">{{ $totalSalidas }}</div>
+            <div class="card-label">Salidas Registradas</div>
         </div>
 
-        <!-- Últimas Salidas -->
-        <div class="section">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2 class="section-title">Últimas Salidas</h2>
-                <a href="{{ route('salidas.create') }}" class="btn btn-danger">Nueva Salida</a>
-            </div>
-            
-            @if($salidas->count() > 0)
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Fecha</th>
-                            <th>Motivo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($salidas as $salida)
-                        <tr>
-                            <td>{{ $salida->producto->nombre }}</td>
-                            <td>{{ $salida->cantidad }}</td>
-                            <td>{{ $salida->created_at->format('d/m/Y H:i') }}</td>
-                            <td>{{ $salida->motivo ?? 'N/A' }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @else
-                <div class="empty-state">
-                    <p>No hay salidas registradas</p>
-                </div>
-            @endif
-        </div>
     </div>
-</body>
-</html>
+
+
+    <!-- Últimos productos -->
+    <div class="card" style="margin-top: 2rem;">
+        <h2 style="margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 10px;">
+            Productos Recientes
+        </h2>
+
+        @if($productos->count())
+            <table class="table" style="color: #fff;">
+                <thead>
+                    <tr>
+                        <th>Cod.</th>
+                        <th>Nombre</th>
+                        <th>Stock</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($productos as $p)
+                    <tr>
+                        <td>{{ $p->codigo }}</td>
+                        <td>{{ $p->nombre }}</td>
+                        <td>{{ $p->stock_actual }}</td>
+                        <td>${{ number_format($p->precio,2) }}</td>
+                        <td>
+                            <a class="btn btn-success btn-sm" href="{{ route('entradas.create') }}?producto_id={{ $p->id }}">Entrada</a>
+                            <a class="btn btn-danger btn-sm" href="{{ route('salidas.create') }}?producto_id={{ $p->id }}">Salida</a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @else
+            <p>No hay productos.</p>
+        @endif
+    </div>
+
+</div>
+
+<!-- MASCOTA UNISTOCK -->
+<div id="mascota" class="mascota-movil">
+    <div class="mascota-body">
+        <div class="mascota-mouth"></div>
+    </div>
+</div>
+
+<script>
+const mascota = document.getElementById('mascota');
+
+// Movimiento automático cada 3 segundos
+function moverMascota() {
+    let maxX = window.innerWidth - 150;
+    let maxY = window.innerHeight - 150;
+
+    let randomX = Math.random() * maxX;
+    let randomY = Math.random() * maxY;
+
+    mascota.style.transition = "all 1.2s ease-in-out";
+    mascota.style.left = randomX + "px";
+    mascota.style.top = randomY + "px";
+}
+
+// Se mueve sola todo el tiempo
+let moverIntervalo = setInterval(moverMascota, 3000);
+
+// Al pasar el mouse, se detiene
+mascota.addEventListener('mouseenter', () => {
+    clearInterval(moverIntervalo);
+});
+
+// Al quitar el mouse, vuelve a moverse
+mascota.addEventListener('mouseleave', () => {
+    moverIntervalo = setInterval(moverMascota, 3000);
+});
+</script>
+
+
+@endsection

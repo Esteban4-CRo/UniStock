@@ -1,85 +1,96 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos - UniStock</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; color: #333; }
-        .navbar { background-color: #2c3e50; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .navbar-brand { font-size: 1.5rem; font-weight: bold; }
-        .navbar-nav { display: flex; gap: 1rem; }
-        .navbar-nav a { color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; transition: background-color 0.3s; }
-        .navbar-nav a:hover { background-color: #34495e; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .btn { display: inline-block; padding: 0.5rem 1rem; background-color: #3498db; color: white; text-decoration: none; border-radius: 4px; border: none; cursor: pointer; }
-        .btn-success { background-color: #27ae60; }
-        .btn-danger { background-color: #e74c3c; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #ecf0f1; }
-        th { background-color: #34495e; color: white; }
-        .actions { display: flex; gap: 0.5rem; }
-        .alert { padding: 1rem; border-radius: 4px; margin-bottom: 1rem; }
-        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-    </style>
-</head>
-<body>
-    <nav class="navbar">
-        <div class="navbar-brand">UniStock</div>
-        <div class="navbar-nav">
-            <a href="{{ route('home') }}">Inicio</a>
-            <a href="{{ route('productos.index') }}">Productos</a>
-            <a href="{{ route('entradas.index') }}">Entradas</a>
-            <a href="{{ route('salidas.index') }}">Salidas</a>
-            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Cerrar Sesión</a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf</form>
+@extends('layouts.app')
+
+@section('content')
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2><i class="fas fa-box"></i> Gestión de Productos</h2>
+            <a href="{{ route('productos.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i> Nuevo Producto
+            </a>
         </div>
-    </nav>
-
-    <div class="container">
-        <div class="header">
-            <h1>Gestión de Productos</h1>
-            <a href="{{ route('productos.create') }}" class="btn btn-success">Nuevo Producto</a>
-        </div>
-
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Stock</th>
-                    <th>Precio</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($productos as $producto)
-                <tr>
-                    <td>{{ $producto->nombre }}</td>
-                    <td>{{ $producto->descripcion ?? 'N/A' }}</td>
-                    <td>{{ $producto->stock_actual }}</td>
-                    <td>${{ number_format($producto->precio, 2) }}</td>
-                    <td class="actions">
-                        <a href="{{ route('entradas.create') }}?producto_id={{ $producto->id }}" class="btn">Entrada</a>
-                        <a href="{{ route('salidas.create') }}?producto_id={{ $producto->id }}" class="btn btn-danger">Salida</a>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-        @if($productos->isEmpty())
-        <div style="text-align: center; padding: 2rem; background: white; border-radius: 8px;">
-            <p>No hay productos registrados</p>
-            <a href="{{ route('productos.create') }}" class="btn btn-success">Agregar Primer Producto</a>
-        </div>
-        @endif
     </div>
-</body>
-</html>
+</div>
+
+@if($productos->isEmpty())
+    <div class="card">
+        <div class="card-body">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="empty-state-title">No hay productos</div>
+                <div class="empty-state-text">Comienza creando tu primer producto en el sistema</div>
+                <a href="{{ route('productos.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> Crear Producto
+                </a>
+            </div>
+        </div>
+    </div>
+@else
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-barcode"></i> Código</th>
+                        <th><i class="fas fa-box"></i> Nombree</th>
+                        <th><i class="fas fa-align-left"></i> Descripción</th>
+                        <th><i class="fas fa-cubes"></i> Stock</th>
+                        <th><i class="fas fa-toggle-on"></i> Estado</th>
+                        <th><i class="fas fa-dollar-sign"></i> Precio</th>
+                        <th><i class="fas fa-cogs"></i> Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($productos as $producto)
+                        <tr>
+                            <td><span class="badge badge-info">{{ $producto->codigo }}</span></td>
+                            <td><strong>{{ $producto->nombre }}</strong></td>
+                            <td>{{ substr($producto->descripcion ?? 'N/A', 0, 40) }}{{ strlen($producto->descripcion ?? '') > 40 ? '...' : '' }}</td>
+                            <td>
+                                <span class="badge badge-warning">
+                                    <i class="fas fa-cubes"></i> {{ $producto->stock_actual }} unid.
+                                </span>
+                            </td>
+                            <td>
+                                @if($producto->estado == 'activo')
+                                    <span class="badge badge-success"><i class="fas fa-check-circle"></i> Activo</span>
+                                @else
+                                    <span class="badge badge-danger"><i class="fas fa-times-circle"></i> Inactivo</span>
+                                @endif
+                            </td>
+                            <td><strong class="text-success">${{ number_format($producto->precio, 2) }}</strong></td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ route('productos.show', $producto) }}" class="btn btn-info" title="Ver">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ route('entradas.create') }}?producto_id={{ $producto->id }}" class="btn btn-success" title="Entrada">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </a>
+                                    <a href="{{ route('salidas.create') }}?producto_id={{ $producto->id }}" class="btn btn-warning" title="Salida">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </a>
+                                    @if(auth()->id() === $producto->user_id)
+                                        <a href="{{ route('productos.edit', $producto) }}" class="btn btn-primary" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('productos.destroy', $producto) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger" title="Eliminar" onclick="return confirm('¿Estás seguro?');">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+@endif
+@endsection
