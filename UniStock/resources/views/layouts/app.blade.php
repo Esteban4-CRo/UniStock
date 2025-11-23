@@ -16,7 +16,7 @@
             min-height: 100vh;
         }
 
-        /* Navbar Monocromo */
+
         .navbar {
             background: #000000;
             padding: 0.75rem 1.25rem;
@@ -34,12 +34,12 @@
 
         .user-avatar { width:36px; height:36px; border-radius:50%; object-fit:cover; margin-right:0.5rem; border:2px solid #fff; }
 
-        /* Cards */
+
         .card { background: #ffffff; border: 1px solid #e9e9e9; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.04); }
         .card-header { background: #f7f7f7; color: #0b0b0b; border-bottom: 1px solid #eee; font-weight:700; }
         .card-body { padding: 1.5rem; }
 
-        /* Buttons Monocromo */
+
         .btn { border-radius: 8px; font-weight:700; }
         .btn-primary { background: #0b0b0b; color: #fff; border: 1px solid #0b0b0b; }
         .btn-primary:hover { background: #1a1a1a; }
@@ -47,17 +47,17 @@
         .btn-secondary:hover { background: #f5f5f5; }
         .btn-danger { background: #000; color:#fff; border:1px solid #000; }
 
-        /* Tables */
+
         .table thead th { background: #f7f7f7; color: #0b0b0b; border-bottom: 1px solid #e9e9e9; }
         .table tbody tr { background: #fff; }
 
-        /* Forms */
+
         .form-control, .form-select { border:1px solid #ddd; border-radius:8px; }
         .form-control:focus, .form-select:focus { box-shadow: 0 0 0 0.12rem rgba(0,0,0,0.06); border-color: #0b0b0b; }
 
         .form-label { font-weight:700; color:#0b0b0b; }
 
-        /* Badges */
+
         .badge { background:#000; color:#fff; padding:0.4rem 0.75rem; border-radius:999px; font-weight:700; }
 
         .container { max-width: 1200px; margin: 0 auto; }
@@ -65,7 +65,7 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
+
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('home') }}">
@@ -143,7 +143,7 @@
 
     <main>
         <div class="container">
-            <!-- Mostrar alertas -->
+
             @if ($errors->any())
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <strong>Error:</strong> Por favor verifica los errores abajo
@@ -165,7 +165,7 @@
                 </div>
             @endif
 
-            <!-- Contenido -->
+
             @yield('content')
         </div>
     </main>
