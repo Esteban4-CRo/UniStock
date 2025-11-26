@@ -46,6 +46,16 @@ class User extends Authenticatable
         return $this->hasOne(Proveedor::class);
     }
 
+    public function alertas()
+    {
+        return $this->hasMany(Alerta::class);
+    }
+
+    public function reportes()
+    {
+        return $this->hasMany(Reporte::class);
+    }
+
     public function isSuperUsuario()
     {
         return $this->role === self::ROLE_SUPER_USUARIO;
@@ -102,6 +112,69 @@ class User extends Authenticatable
             self::ROLE_PROVEEDOR => 'fa-truck',
             default => 'fa-user',
         };
+    }
+
+    // Métodos del diagrama de clases (Usuario)
+    public function login() {
+        // Implementación manejada por Laravel Auth
+        return true;
+    }
+
+    public function logOut() {
+        // Implementación manejada por Laravel Auth
+        return true;
+    }
+
+    public function cambiarContrasena($newPassword) {
+        $this->password = bcrypt($newPassword);
+        return $this->save();
+    }
+
+    // Métodos del diagrama (Administrador -> SuperUsuario)
+    public function gestionarUsuarios() {
+        return $this->isSuperUsuario();
+    }
+
+    public function configurarSistema() {
+        return $this->isSuperUsuario();
+    }
+
+    public function generarReportesAuditoria() {
+        return $this->isSuperUsuario();
+    }
+
+    // Métodos del diagrama (JefeLogistica -> Gerente)
+    public function generarReportes() {
+        return $this->isGerente();
+    }
+
+    public function configurarAlertas() {
+        return $this->isGerente();
+    }
+
+    public function compararInventario() {
+        return $this->isGerente();
+    }
+
+    // Métodos del diagrama (AuxiliarAlmacen -> Almacenista)
+    public function consultarStock() {
+        return $this->isAlmacenista();
+    }
+
+    public function verReporte() {
+        return $this->isAlmacenista();
+    }
+
+    public function registrarEntradas() {
+        return $this->isAlmacenista();
+    }
+
+    public function registrarSalidas() {
+        return $this->isAlmacenista();
+    }
+
+    public function realizarAjustes() {
+        return $this->isAlmacenista();
     }
 }
 

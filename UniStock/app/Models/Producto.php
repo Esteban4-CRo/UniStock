@@ -16,8 +16,29 @@ class Producto extends Model
         'stock_actual',
         'precio',
         'user_id',
-        'estado'
+        'estado',
+        'unidad_medida',
+        'stock_minimo',
+        'fecha_caducidad',
+        'lote'
     ];
+
+    // Métodos del diagrama (MateriaPrima)
+    public function actualizarStock($cantidad) {
+        $this->stock_actual += $cantidad;
+        return $this->save();
+    }
+
+    public function verificarCaducidad() {
+        if ($this->fecha_caducidad) {
+            return now()->greaterThan($this->fecha_caducidad);
+        }
+        return false;
+    }
+
+    public function calcularDisponibilidad() {
+        return $this->stock_actual - $this->stock_minimo;
+    }
 
     public function entradas()
     {

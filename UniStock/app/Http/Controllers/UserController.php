@@ -39,7 +39,7 @@ class UserController extends Controller
 
     public function create()
     {
-        if (!auth()->user()->isSuperUsuario()) {
+        if (!auth()->user()->gestionarUsuarios()) {
             return redirect()->route('usuarios.index')
                 ->with('error', 'No tienes permisos para crear usuarios.');
         }
@@ -56,7 +56,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->isSuperUsuario()) {
+        if (!auth()->user()->gestionarUsuarios()) {
             return redirect()->route('usuarios.index')
                 ->with('error', 'No tienes permisos para crear usuarios.');
         }
@@ -138,7 +138,7 @@ class UserController extends Controller
 
     public function edit(User $usuario)
     {
-        if (!auth()->user()->isSuperUsuario() && auth()->id() !== $usuario->id) {
+        if (!auth()->user()->gestionarUsuarios() && auth()->id() !== $usuario->id) {
             return redirect()->route('usuarios.index')
                 ->with('error', 'No tienes permisos para editar este usuario.');
         }
@@ -157,7 +157,7 @@ class UserController extends Controller
 
     public function update(Request $request, User $usuario)
     {
-        if (!auth()->user()->isSuperUsuario() && auth()->id() !== $usuario->id) {
+        if (!auth()->user()->gestionarUsuarios() && auth()->id() !== $usuario->id) {
             return redirect()->route('usuarios.index')
                 ->with('error', 'No tienes permisos para actualizar este usuario.');
         }
@@ -236,7 +236,7 @@ class UserController extends Controller
 
     public function destroy(User $usuario)
     {
-        if (!auth()->user()->isSuperUsuario()) {
+        if (!auth()->user()->gestionarUsuarios()) {
             return redirect()->route('usuarios.index')
                 ->with('error', 'No tienes permisos para eliminar usuarios.');
         }

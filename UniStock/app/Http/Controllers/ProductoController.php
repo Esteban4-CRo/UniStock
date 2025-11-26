@@ -26,10 +26,17 @@ class ProductoController extends Controller
             'nombre' => 'required|string|max:255|unique:productos',
             'descripcion' => 'nullable|string',
             'stock_actual' => 'required|integer|min:0',
-            'precio' => 'required|numeric|min:0'
+            'precio' => 'required|numeric|min:0',
+            'unidad_medida' => 'nullable|string|max:50',
+            'stock_minimo' => 'nullable|integer|min:0',
+            'fecha_caducidad' => 'nullable|date',
+            'lote' => 'nullable|string|max:100',
         ]);
 
-        $data = $request->only(['codigo', 'nombre', 'descripcion', 'stock_actual', 'precio']);
+        $data = $request->only([
+            'codigo', 'nombre', 'descripcion', 'stock_actual', 'precio',
+            'unidad_medida', 'stock_minimo', 'fecha_caducidad', 'lote'
+        ]);
         $data['user_id'] = Auth::id();
 
         Producto::create($data);
@@ -62,11 +69,18 @@ class ProductoController extends Controller
             'nombre' => 'required|string|max:255|unique:productos,nombre,' . $producto->id,
             'descripcion' => 'nullable|string',
             'stock_actual' => 'required|integer|min:0',
-            'precio' => 'required|numeric|min:0'
+            'precio' => 'required|numeric|min:0',
+            'unidad_medida' => 'nullable|string|max:50',
+            'stock_minimo' => 'nullable|integer|min:0',
+            'fecha_caducidad' => 'nullable|date',
+            'lote' => 'nullable|string|max:100',
         ]);
 
         // No permitir editar el código
-        $producto->update($request->only(['nombre', 'descripcion', 'stock_actual', 'precio']));
+        $producto->update($request->only([
+            'nombre', 'descripcion', 'stock_actual', 'precio',
+            'unidad_medida', 'stock_minimo', 'fecha_caducidad', 'lote'
+        ]));
 
         return redirect()->route('productos.index')
                          ->with('success', 'Producto actualizado exitosamente.');

@@ -7,6 +7,7 @@ use App\Http\Controllers\SalidaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProveedorController;
 
 
 Route::get('/', function () {
@@ -25,6 +26,9 @@ Route::middleware(['auth'])->group(function () {
     
     // Rutas para usuarios
     Route::resource('usuarios', UserController::class);
+
+    // Rutas para proveedores
+    Route::resource('proveedores', ProveedorController::class);
     
     // Rutas para productos
     Route::get('/productos', [ProductoController::class, 'index'])->name('productos.index');

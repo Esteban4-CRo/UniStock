@@ -3,70 +3,6 @@
 @section('content')
 <style>
 /* ---------------------------
-   ANIMACIÓN MASCOTA UNISTOCK
-----------------------------*/
-.mascota-movil {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 110px;
-    height: 110px;
-    z-index: 9999;
-    cursor: pointer;
-    animation: saltar 1s infinite ease-in-out, rotar 6s linear infinite;
-}
-
-.mascota-body {
-    width: 100%;
-    height: 100%;
-    background: #1abc9c;
-    border-radius: 60%;
-    position: relative;
-    box-shadow: 0 0 12px #1abc9c;
-}
-
-/* Ojos */
-.mascota-body::before,
-.mascota-body::after {
-    content: '';
-    position: absolute;
-    top: 35%;
-    width: 16px;
-    height: 16px;
-    background: #fff;
-    border-radius: 50%;
-}
-
-.mascota-body::before { left: 28%; }
-.mascota-body::after { right: 28%; }
-
-/* Boca feliz */
-.mascota-mouth {
-    position: absolute;
-    bottom: 28%;
-    left: 50%;
-    width: 45px;
-    height: 25px;
-    background: transparent;
-    border-bottom: 5px solid #fff;
-    border-radius: 0 0 50px 50px;
-    transform: translateX(-50%);
-}
-
-/* Animación de salto */
-@keyframes saltar {
-    0%   { transform: translateY(0px); }
-    50%  { transform: translateY(-20px); }
-    100% { transform: translateY(0px); }
-}
-
-/* Rotación lenta y suave */
-@keyframes rotar {
-    0%   { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* ---------------------------
    ESTILOS DEL DASHBOARD
 ----------------------------*/
 .dashboard-title {
@@ -179,44 +115,73 @@
         @endif
     </div>
 
-</div>
+    <!-- Últimas Entradas -->
+    <div class="card" style="margin-top: 2rem;">
+        <div style="margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">Últimas Entradas</h2>
+            <a href="{{ route('entradas.index') }}" class="btn btn-sm btn-outline-light">Ver Todas</a>
+        </div>
 
-<!-- MASCOTA UNISTOCK -->
-<div id="mascota" class="mascota-movil">
-    <div class="mascota-body">
-        <div class="mascota-mouth"></div>
+        @if($entradas->count())
+            <table class="table" style="color: #fff;">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Motivo</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($entradas as $entrada)
+                    <tr>
+                        <td>{{ $entrada->producto->nombre }}</td>
+                        <td><span class="badge bg-success">+{{ $entrada->cantidad }}</span></td>
+                        <td>{{ $entrada->motivo }}</td>
+                        <td>{{ $entrada->created_at->format('d/m/Y H:i') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @else
+            <p style="opacity: 0.7;">No hay entradas registradas.</p>
+        @endif
     </div>
+
+    <!-- Últimas Salidas -->
+    <div class="card" style="margin-top: 2rem;">
+        <div style="margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">Últimas Salidas</h2>
+            <a href="{{ route('salidas.index') }}" class="btn btn-sm btn-outline-light">Ver Todas</a>
+        </div>
+
+        @if($salidas->count())
+            <table class="table" style="color: #fff;">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Motivo</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($salidas as $salida)
+                    <tr>
+                        <td>{{ $salida->producto->nombre }}</td>
+                        <td><span class="badge bg-danger">-{{ $salida->cantidad }}</span></td>
+                        <td>{{ $salida->motivo }}</td>
+                        <td>{{ $salida->created_at->format('d/m/Y H:i') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @else
+            <p style="opacity: 0.7;">No hay salidas registradas.</p>
+        @endif
+    </div>
+
 </div>
-
-<script>
-const mascota = document.getElementById('mascota');
-
-// Movimiento automático cada 3 segundos
-function moverMascota() {
-    let maxX = window.innerWidth - 150;
-    let maxY = window.innerHeight - 150;
-
-    let randomX = Math.random() * maxX;
-    let randomY = Math.random() * maxY;
-
-    mascota.style.transition = "all 1.2s ease-in-out";
-    mascota.style.left = randomX + "px";
-    mascota.style.top = randomY + "px";
-}
-
-// Se mueve sola todo el tiempo
-let moverIntervalo = setInterval(moverMascota, 3000);
-
-// Al pasar el mouse, se detiene
-mascota.addEventListener('mouseenter', () => {
-    clearInterval(moverIntervalo);
-});
-
-// Al quitar el mouse, vuelve a moverse
-mascota.addEventListener('mouseleave', () => {
-    moverIntervalo = setInterval(moverMascota, 3000);
-});
-</script>
 
 
 @endsection

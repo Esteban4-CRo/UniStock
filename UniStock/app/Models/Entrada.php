@@ -19,4 +19,17 @@ class Entrada extends Model
     {
         return $this->belongsTo(Producto::class);
     }
+
+    // Métodos del diagrama (MovimientoInventario)
+    public function registrarMovimiento() {
+        return $this->save();
+    }
+
+    public function validarCantidad() {
+        return $this->cantidad > 0;
+    }
+
+    public function generarComprobante() {
+        return "Comprobante de Entrada #" . $this->id;
+    }
 }
