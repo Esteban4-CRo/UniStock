@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductHistoryReportController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\ProveedorController;
 
 Route::get('/', function () {
     return view('welcome_index');
@@ -27,6 +28,8 @@ Route::middleware(['auth', 'prevent-back'])->group(function () {
     // Rutas para usuarios
     Route::resource('usuarios', UserController::class);
 
+    // Rutas para proveedores
+    Route::resource('proveedores', ProveedorController::class);
     // Rutas para productos
     Route::get('/productos', [ProductoController::class, 'index'])->name('productos.index');
     Route::get('/productos/create', [ProductoController::class, 'create'])->name('productos.create');

@@ -36,11 +36,15 @@ class SalidaController extends Controller
         }
 
         // Crear la salida
-        Salida::create($request->all());
+        $salida = new Salida($request->all());
 
-        // Actualizar el stock del producto
-        $producto->stock_actual -= $request->cantidad;
-        $producto->save();
+        if ($salida->validarCantidad()) {
+            $salida->registrarMovimiento();
+
+            // Actualizar el stock del producto usando el método del modelo (MateriaPrima)
+            // En salida restamos, así que pasamos la cantidad negativa
+            $producto->actualizarStock(-$request->cantidad);
+        }
 
         return redirect()->route('salidas.index')
                          ->with('success', 'Salida registrada exitosamente.');

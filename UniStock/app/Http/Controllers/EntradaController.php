@@ -30,12 +30,15 @@ class EntradaController extends Controller
         ]);
 
         // Crear la entrada
-        Entrada::create($request->all());
+        $entrada = new Entrada($request->all());
+        
+        if ($entrada->validarCantidad()) {
+            $entrada->registrarMovimiento();
 
-        // Actualizar el stock del producto
-        $producto = Producto::find($request->producto_id);
-        $producto->stock_actual += $request->cantidad;
-        $producto->save();
+            // Actualizar el stock del producto usando el método del modelo (MateriaPrima)
+            $producto = Producto::find($request->producto_id);
+            $producto->actualizarStock($request->cantidad);
+        }
 
         return redirect()->route('entradas.index')
                          ->with('success', 'Entrada registrada exitosamente.');

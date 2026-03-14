@@ -116,6 +116,73 @@
         @endif
     </div>
 
+    <!-- Últimas Entradas -->
+    <div class="card" style="margin-top: 2rem;">
+        <div style="margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">Últimas Entradas</h2>
+            <a href="{{ route('entradas.index') }}" class="btn btn-sm btn-outline-light">Ver Todas</a>
+        </div>
+
+
+        @if($entradas->count())
+            <table class="table" style="color: #fff;">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Motivo</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($entradas as $entrada)
+                    <tr>
+                        <td>{{ $entrada->producto->nombre }}</td>
+                        <td><span class="badge bg-success">+{{ $entrada->cantidad }}</span></td>
+                        <td>{{ $entrada->motivo }}</td>
+                        <td>{{ $entrada->created_at->format('d/m/Y H:i') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @else
+            <p style="opacity: 0.7;">No hay entradas registradas.</p>
+        @endif
+    </div>
+
+    <!-- Últimas Salidas -->
+    <div class="card" style="margin-top: 2rem;">
+        <div style="margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">Últimas Salidas</h2>
+            <a href="{{ route('salidas.index') }}" class="btn btn-sm btn-outline-light">Ver Todas</a>
+        </div>
+
+        @if($salidas->count())
+            <table class="table" style="color: #fff;">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Motivo</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($salidas as $salida)
+                    <tr>
+                        <td>{{ $salida->producto->nombre }}</td>
+                        <td><span class="badge bg-danger">-{{ $salida->cantidad }}</span></td>
+                        <td>{{ $salida->motivo }}</td>
+                        <td>{{ $salida->created_at->format('d/m/Y H:i') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @else
+            <p style="opacity: 0.7;">No hay salidas registradas.</p>
+        @endif
+    </div>
+
 </div>
 
 

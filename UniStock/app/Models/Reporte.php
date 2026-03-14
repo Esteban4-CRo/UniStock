@@ -14,10 +14,17 @@ class Reporte extends Model
         'producto_id',
         'reporte_nombre',
         'fecha_generacion',
+        'tipo',
+        'fecha_inicio',
+        'fecha_fin',
+        'contenido',
+        'formato',
     ];
 
     protected $casts = [
         'fecha_generacion' => 'datetime',
+        'fecha_inicio' => 'date',
+        'fecha_fin' => 'date',
     ];
 
     public function user()
@@ -28,5 +35,24 @@ class Reporte extends Model
     public function producto()
     {
         return $this->belongsTo(Producto::class);
+    }
+
+    // Métodos del diagrama
+    public function generarReporte()
+    {
+        // Lógica para generar reporte
+        return $this->save();
+    }
+
+    public function exportarPDF()
+    {
+        $this->formato = 'pdf';
+        return "Reporte exportado en PDF";
+    }
+
+    public function exportarExcel()
+    {
+        $this->formato = 'excel';
+        return "Reporte exportado en Excel";
     }
 }
