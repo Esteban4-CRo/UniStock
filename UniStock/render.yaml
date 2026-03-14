@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: unistock
+    env: php
+    plan: free
+    buildCommand: composer install --no-dev && npm install && npm run build
+    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        value: aws-1-us-east-2.pooler.supabase.com
+      - key: DB_PORT
+        value: 5432
+      - key: DB_DATABASE
+        value: postgres
+      - key: DB_USERNAME
+        value: postgres.bmxfjvkrsvwrmnareljm
+      - key: DB_PASSWORD
+        value: 94410404Unilever
+      - key: APP_KEY
+        value: base64:fH75W9eM3P9z6v3w/8Yj0Ua7j8p9z6v3w/8Yj0Ua7j8=
+      - key: APP_URL
+        value: https://unistock.onrender.com
