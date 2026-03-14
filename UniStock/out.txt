@@ -1,0 +1,124 @@
+﻿composer : ./composer.json 
+has been updated
+En línea: 1 Carácter: 1
++ composer require 
+barryvdh/laravel-dompdf 2>&1 
+| Out-File -FilePath ou ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (./compose  
+  r.json has been updated:S   
+ tring) [], RemoteExceptio    
+n
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+Running composer update 
+barryvdh/laravel-dompdf
+Loading composer repositories 
+with package information
+Updating dependencies
+Your requirements could not 
+be resolved to an installable 
+set of packages.
+
+  Problem 1
+    - Root composer.json 
+requires phpunit/phpunit 
+^11.5.3, found 
+phpunit/phpunit[11.5.3, ..., 
+11.5.55] but these were not 
+loaded, because they are 
+affected by security 
+advisories. To ignore the 
+advisories, add 
+("PKSA-z3gr-8qht-p93v") to 
+the audit "ignore" config. To 
+turn the feature off 
+entirely, you can set 
+"block-insecure" to false in 
+your "audit" config.
+  Problem 2
+    - laravel/framework is 
+locked to version v12.37.0 
+and an update of this package 
+was not requested.
+    - laravel/framework 
+v12.37.0 requires 
+league/commonmark ^2.7 -> 
+found 
+league/commonmark[2.7.0, 
+2.7.1, 2.8.0, 2.8.1] but 
+these were not loaded, 
+because they are affected by 
+security advisories. To 
+ignore the advisories, add 
+("PKSA-2cx9-ynrq-qdk3") to 
+the audit "ignore" config. To 
+turn the feature off 
+entirely, you can set 
+"block-insecure" to false in 
+your "audit" config.
+  Problem 3
+    - laravel/tinker is 
+locked to version v2.10.1 and 
+an update of this package was 
+not requested.
+    - laravel/tinker v2.10.1 
+requires psy/psysh 
+^0.11.1|^0.12.0 -> found 
+psy/psysh[v0.11.1, ..., 
+v0.12.21] but these were not 
+loaded, because they are 
+affected by security 
+advisories. To ignore the 
+advisories, add 
+("PKSA-4s4z-t146-6123") to 
+the audit "ignore" config. To 
+turn the feature off 
+entirely, you can set 
+"block-insecure" to false in 
+your "audit" config.
+  Problem 4
+    - laravel/sail is locked 
+to version v1.47.0 and an 
+update of this package was 
+not requested.
+    - laravel/framework 
+v12.37.0 requires 
+league/commonmark ^2.7 -> 
+found 
+league/commonmark[2.7.0, 
+2.7.1, 2.8.0, 2.8.1] but 
+these were not loaded, 
+because they are affected by 
+security advisories. To 
+ignore the advisories, add 
+("PKSA-2cx9-ynrq-qdk3") to 
+the audit "ignore" config. To 
+turn the feature off 
+entirely, you can set 
+"block-insecure" to false in 
+your "audit" config.
+    - laravel/sail v1.47.0 
+requires illuminate/console 
+^9.52.16|^10.0|^11.0|^12.0 -> 
+satisfiable by 
+laravel/framework[v12.37.0].
+
+You can also try re-running 
+composer require with an 
+explicit version constraint, 
+e.g. "composer require 
+barryvdh/laravel-dompdf:*" to 
+figure out if any version is 
+installable, or "composer 
+require 
+barryvdh/laravel-dompdf:^2.1" 
+if you know which you need.
+
+Installation failed, 
+reverting ./composer.json and 
+./composer.lock to their 
+original content.

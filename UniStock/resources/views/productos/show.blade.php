@@ -109,6 +109,13 @@
                         <a href="{{ route('productos.index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Volver
                         </a>
+                        <form action="{{ route('reports.product-history') }}" method="POST" style="display:inline;">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $producto->id }}">
+                            <button type="submit" class="btn btn-info" style="color: white; border-radius: 8px;">
+                                <i class="fas fa-file-pdf"></i> Generar Reporte PDF
+                            </button>
+                        </form>
                         @if(Auth::check() && Auth::id() === $producto->user_id)
                             <a href="{{ route('productos.edit', $producto) }}" class="btn btn-warning">
                                 <i class="fas fa-edit"></i> Editar

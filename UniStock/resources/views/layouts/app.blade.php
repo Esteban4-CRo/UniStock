@@ -113,6 +113,11 @@
                                 <i class="fas fa-arrow-up"></i> Salidas
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('reportes.*') ? 'active' : '' }}" href="{{ route('reportes.index') }}">
+                                <i class="fas fa-file-pdf"></i> Reportes
+                            </a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                                 @if(Auth::user()->photo)
