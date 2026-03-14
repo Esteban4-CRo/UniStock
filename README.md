@@ -11,7 +11,7 @@
 ## ✨ Características Principales
 
 ### 🔧 Módulos Principales
-- **Gestión de Productos**: CRUD completo de productos con imágenes
+- **Gestión de Productos**: CRUD completo de productos 
 - **Control de Categorías**: Organización jerárquica de productos
 - **Administración de Proveedores**: Registro y seguimiento de proveedores
 - **Movimientos de Inventario**: Entradas, salidas y ajustes de stock

@@ -11,7 +11,8 @@ class ReporteController extends Controller
     {
         // Get paginated recent reports with user information
         $reportes = Reporte::with(['user', 'producto'])->orderBy('fecha_generacion', 'desc')->paginate(15);
+        $productos = \App\Models\Producto::all();
         
-        return view('reportes.index', compact('reportes'));
+        return view('reportes.index', compact('reportes', 'productos'));
     }
 }

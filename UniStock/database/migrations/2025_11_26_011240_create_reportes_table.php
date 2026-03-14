@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('reportes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('tipo', ['inventario', 'ventas', 'compras', 'movimientos']);
-            $table->date('fecha_inicio');
-            $table->date('fecha_fin');
+            $table->enum('tipo', ['inventario', 'ventas', 'compras', 'movimientos'])->nullable();
+            $table->date('fecha_inicio')->nullable();
+            $table->date('fecha_fin')->nullable();
             $table->text('contenido')->nullable();
             $table->string('formato')->default('pdf'); // pdf, excel, csv
+            $table->string('reporte_nombre')->nullable();
+            $table->timestamp('fecha_generacion')->nullable();
             $table->timestamps();
         });
     }

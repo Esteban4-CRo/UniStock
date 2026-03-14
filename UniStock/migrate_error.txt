@@ -1,0 +1,53 @@
+﻿
+  Dropping all tables  184.09ms DONE
+
+   INFO  Preparing database.  
+
+  Creating migration table  14.86ms DONE
+
+   INFO  Running migrations.  
+
+  0001_01_01_000000_create_users_table  79.52ms DONE
+  0001_01_01_000001_create_cache_table  24.67ms DONE
+  0001_01_01_000002_create_jobs_table  66.66ms DONE
+  2025_11_05_064659_create_productos_table  10.66ms DONE
+  2025_11_05_064705_create_entradas_table  62.94ms DONE
+  2025_11_05_064711_create_salidas_table  63.06ms DONE
+  2025_11_17_000001_add_user_id_to_productos_table  55.97ms DONE
+  2025_11_19_000001_add_estado_to_productos_table  5.85ms DONE
+  2025_11_19_000002_add_unique_nombre_to_productos_table  13.86ms DONE
+  2025_11_19_000003_add_photo_to_users_table  7.61ms DONE
+  2025_11_19_000004_add_codigo_to_productos_table  23.71ms DONE
+  2025_11_23_000001_add_role_to_users_table  7.77ms DONE
+  2025_11_23_000002_create_user_profiles_table  69.92ms DONE
+  2025_11_23_000003_create_proveedores_table  94.67ms DONE
+  2025_11_26_000001_add_fields_to_productos_table  25.77ms DONE
+  2025_11_26_005722_add_fields_to_productos_table  0.10ms DONE
+  2025_11_26_011228_create_alertas_table  67.99ms DONE
+  2025_11_26_011240_create_reportes_table  63.23ms DONE
+  2025_11_26_011241_create_configuracions_table  10.82ms DONE
+  2025_11_26_011241_create_material_primas_table  12.59ms DONE
+  2025_11_26_011307_create_auxiliar_almacena_table  127.03ms DONE
+  2026_03_14_000000_create_reportes_table  1.51ms FAIL
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'reportes' already exists (Connection: mysql, Host: 127.0.0.1, Port: 3306, Database: UniStockDB, SQL: create table `reportes` (`id` bigint unsigned not null auto_increment primary key, `user_id` bigint unsigned not null, `reporte_nombre` varchar(255) not null, `fecha_generacion` timestamp not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci')
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:838
+    834Ôûò             $exceptionType = $this->isUniqueConstraintError($e)
+    835Ôûò                 ? UniqueConstraintViolationException::class
+    836Ôûò                 : QueryException::class;
+    837Ôûò 
+  Ô×£ 838Ôûò             throw new $exceptionType(
+    839Ôûò                 $this->getNameWithReadWriteType(),
+    840Ôûò                 $query,
+    841Ôûò                 $this->prepareBindings($bindings),
+    842Ôûò                 $e,
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connection.php:584
+      PDOException::("SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'reportes' already exists")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connection.php:584
+      PDOStatement::execute()
+

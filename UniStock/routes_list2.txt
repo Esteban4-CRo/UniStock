@@ -1,0 +1,54 @@
+﻿
+  GET|HEAD        / . welcome
+  GET|HEAD        entradas eÔÇª
+  POST            entradas eÔÇª
+  GET|HEAD        entradas/create entradas.create ÔÇ║ EntradaController@ÔÇª
+  GET|HEAD        home home ÔÇª
+  GET|HEAD        login logiÔÇª
+  POST            login AuthÔÇª
+  POST            logout logÔÇª
+  GET|HEAD        password/confirm password.confirm ÔÇ║ Auth\ConfirmPasswordController@showConfÔÇª
+  POST            password/confirm Auth\ConfirmPasswordController@ÔÇª
+  POST            password/email password.email ÔÇ║ Auth\ForgotPasswordController@sendResetLinkÔÇª
+  GET|HEAD        password/reset password.request ÔÇ║ Auth\ForgotPasswordController@showLinkRequesÔÇª
+  POST            password/reset password.update ÔÇ║ Auth\ResetPasswordController@ÔÇª
+  GET|HEAD        password/reset/{token} password.reset ÔÇ║ Auth\ResetPasswordController@ÔÇª
+  GET|HEAD        productos ÔÇª
+  POST            productos ÔÇª
+  GET|HEAD        productos/create productos.create ÔÇ║ ProductoControllerÔÇª
+  GET|HEAD        productos/{producto} productos.show ÔÇ║ ProductoContÔÇª
+  PUT             productos/{producto} productos.update ÔÇ║ ProductoControÔÇª
+  DELETE          productos/{producto} productos.destroy ÔÇ║ ProductoControlÔÇª
+  GET|HEAD        productos/{producto}/edit productos.edit ÔÇ║ ProductÔÇª
+  POST            productos/{producto}/entrada productos.entrada.store ÔÇ║ EntrÔÇª
+  POST            productos/{producto}/salida productos.salida.store ÔÇ║ SaliÔÇª
+  GET|HEAD        profile prÔÇª
+  PUT             profile prÔÇª
+  DELETE          profile/photo profile.deletePhoto ÔÇ║ ProfileController@deletePÔÇª
+  GET|HEAD        proveedores proveedores.index ÔÇ║ ProveedorController@indÔÇª
+  POST            proveedores proveedores.store ÔÇ║ ProveedorController@stoÔÇª
+  GET|HEAD        proveedores/create proveedores.create ÔÇ║ ProveedorControllÔÇª
+  GET|HEAD        proveedores/{proveedore} proveedores.show ÔÇ║ ProveedorÔÇª
+  PUT|PATCH       proveedores/{proveedore} proveedores.update ÔÇ║ ProveedorCoÔÇª
+  DELETE          proveedores/{proveedore} proveedores.destroy ÔÇ║ ProveedorConÔÇª
+  GET|HEAD        proveedores/{proveedore}/edit proveedores.edit ÔÇ║ ProvÔÇª
+  GET|HEAD        register rÔÇª
+  POST            register AÔÇª
+  GET|HEAD        reportes rÔÇª
+  POST            reports/product-history reports.product-history ÔÇ║ ProductHistoryReportController@ÔÇª
+  GET|HEAD        salidas saÔÇª
+  POST            salidas saÔÇª
+  GET|HEAD        salidas/create salidas.create ÔÇ║ SalidaController@cÔÇª
+  GET|HEAD        storage/{path} storage.ÔÇª
+  PUT             storage/{path} storage.local.uÔÇª
+  GET|HEAD        up ........ 
+  GET|HEAD        usuarios uÔÇª
+  POST            usuarios uÔÇª
+  GET|HEAD        usuarios/create usuarios.create ÔÇ║ UserController@ÔÇª
+  GET|HEAD        usuarios/{usuario} usuarios.show ÔÇ║ UserControÔÇª
+  PUT|PATCH       usuarios/{usuario} usuarios.update ÔÇ║ UserControllÔÇª
+  DELETE          usuarios/{usuario} usuarios.destroy ÔÇ║ UserControlleÔÇª
+  GET|HEAD        usuarios/{usuario}/edit usuarios.edit ÔÇ║ UserCÔÇª
+
+          Showing [50] routes
+

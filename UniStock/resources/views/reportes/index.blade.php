@@ -5,11 +5,30 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 style="font-weight:800; font-size:1.5rem;">
-        <i class="fas fa-file-pdf text-danger"></i> Historial de Reportes
+        <i class="fas fa-file-pdf text-danger"></i> Reportes
     </h2>
     <span class="badge" style="background:#0b0b0b; font-size:0.85rem; padding: 0.5rem 1rem;">
         {{ $reportes->total() }} reportes generados
     </span>
+</div>
+
+<div class="card mb-4 border-0 shadow-sm" style="background:#f8f9fa;">
+    <div class="card-body">
+        <h5 style="font-weight:700;"><i class="fas fa-plus-circle me-1"></i> Generar Nuevo Reporte</h5>
+        <p class="text-muted small mb-3">Selecciona un producto del catálogo para generar y descargar un archivo PDF con todo su historial de entradas y salidas.</p>
+        <form action="{{ route('reports.product-history') }}" method="POST" class="d-flex gap-2 align-items-center">
+            @csrf
+            <select name="product_id" class="form-select" required style="max-width:350px;">
+                <option value="" disabled selected>-- Seleccionar producto --</option>
+                @foreach($productos as $p)
+                    <option value="{{ $p->id }}">{{ $p->codigo }} - {{ $p->nombre }} (Stock: {{ $p->stock_actual }})</option>
+                @endforeach
+            </select>
+            <button type="submit" class="btn btn-danger" style="font-weight:600;">
+                <i class="fas fa-file-pdf"></i> Generar Reporte PDF
+            </button>
+        </form>
+    </div>
 </div>
 
 <div class="card">
