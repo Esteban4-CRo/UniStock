@@ -41,7 +41,8 @@ class ProductHistoryReportController extends Controller
         ]);
 
         // Return PDF download
-        $filename = 'Reporte_' . str_replace(' ', '_', $product->nombre) . '_' . now()->format('Ymd_His') . '.pdf';
+        $cleanName = \Illuminate\Support\Str::slug($product->nombre, '_');
+        $filename = 'Reporte_' . $cleanName . '_' . now()->format('Ymd_His') . '.pdf';
         return $pdf->download($filename);
     }
 }
