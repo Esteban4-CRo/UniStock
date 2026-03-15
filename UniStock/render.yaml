@@ -3,7 +3,8 @@ services:
     name: unistock
     env: php
     plan: free
-    buildCommand: composer install --no-dev && npm install && npm run build
+    rootDir: UniStock
+    buildCommand: composer install --no-dev && npm install && npm run build && php artisan storage:link
     startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
     envVars:
       - key: APP_ENV
@@ -23,6 +24,10 @@ services:
       - key: DB_PASSWORD
         value: 94410404Unilever
       - key: APP_KEY
-        value: base64:fH75W9eM3P9z6v3w/8Yj0Ua7j8p9z6v3w/8Yj0Ua7j8=
+        value: "base64:8Ehyg5VjdHSoqWmQG5o8gh8ucY9swIVvSi1aCZAWspw="
       - key: APP_URL
         value: https://unistock.onrender.com
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: CACHE_DRIVER
+        value: file
