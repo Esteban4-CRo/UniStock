@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -132,7 +132,7 @@
                                 <li><hr class="dropdown-divider" style="background: rgba(255,255,255,0.2)"></li>
                                 <li>
                                     <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesi├│n
                                     </a>
                                 </li>
                             </ul>
