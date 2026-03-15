@@ -114,9 +114,8 @@
 </head>
 <body>
 
-    <!-- Header -->
     <div class="header">
-        <h1>&#128230; UniStock &mdash; Reporte de Historial</h1>
+        <h1>UniStock &mdash; Reporte de Historial</h1>
         <div class="subtitle">Informe completo de movimientos del producto</div>
     </div>
 
@@ -163,7 +162,7 @@
     </table>
 
     <!-- Entries -->
-    <div class="section-title entradas">&#9650; Entradas</div>
+    <div class="section-title entradas">Entradas</div>
     @if($entries->count() > 0)
         <table class="data-table entradas">
             <thead>
@@ -190,7 +189,7 @@
     @endif
 
     <!-- Exits -->
-    <div class="section-title salidas">&#9660; Salidas</div>
+    <div class="section-title salidas">Salidas</div>
     @if($exits->count() > 0)
         <table class="data-table salidas">
             <thead>

@@ -27,17 +27,18 @@
 }
 
 .card {
-    background: #1e1e1e;
+    background: #ffffff;
     padding: 1.5rem;
     border-radius: 12px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
-    color: #fff;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    color: #333;
     transition: 0.3s;
+    border: 1px solid #eee;
 }
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
 }
 
 .card-number {
@@ -81,13 +82,13 @@
 
     <!-- Últimos productos -->
     <div class="card" style="margin-top: 2rem;">
-        <h2 style="margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 10px;">
+        <h2 style="margin-bottom: 1rem; border-bottom: 1px solid #eaeaea; padding-bottom: 10px;">
             Productos Recientes
         </h2>
 
         @if($productos->count())
             <div class="table-responsive">
-                <table class="table" style="color: #fff;">
+                <table class="table" style="color: #333;">
                     <thead>
                         <tr>
                             <th>Cod.</th>
@@ -120,15 +121,15 @@
 
     <!-- Últimas Entradas -->
     <div class="card" style="margin-top: 2rem;">
-        <div style="margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="margin-bottom: 1rem; border-bottom: 1px solid #eaeaea; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
             <h2 style="margin: 0;">Últimas Entradas</h2>
-            <a href="{{ route('entradas.index') }}" class="btn btn-sm btn-outline-light">Ver Todas</a>
+            <a href="{{ route('entradas.index') }}" class="btn btn-sm btn-outline-dark">Ver Todas</a>
         </div>
 
 
         @if($entradas->count())
             <div class="table-responsive">
-                <table class="table" style="color: #fff;">
+                <table class="table" style="color: #333;">
                     <thead>
                         <tr>
                             <th>Producto</th>
@@ -156,14 +157,14 @@
 
     <!-- Últimas Salidas -->
     <div class="card" style="margin-top: 2rem;">
-        <div style="margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="margin-bottom: 1rem; border-bottom: 1px solid #eaeaea; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
             <h2 style="margin: 0;">Últimas Salidas</h2>
-            <a href="{{ route('salidas.index') }}" class="btn btn-sm btn-outline-light">Ver Todas</a>
+            <a href="{{ route('salidas.index') }}" class="btn btn-sm btn-outline-dark">Ver Todas</a>
         </div>
 
         @if($salidas->count())
             <div class="table-responsive">
-                <table class="table" style="color: #fff;">
+                <table class="table" style="color: #333;">
                     <thead>
                         <tr>
                             <th>Producto</th>
