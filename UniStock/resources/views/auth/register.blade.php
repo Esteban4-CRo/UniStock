@@ -22,21 +22,7 @@
                             
                             <div class="role-selector">
                                 <div class="role-option">
-                                    <input type="radio" name="role" id="role_super_usuario" value="super_usuario" required>
-                                    <label for="role_super_usuario">
-                                        <i class="fas fa-crown text-warning"></i>
-                                        <span>Super Usuario</span>
-                                    </label>
-                                </div>
-                                <div class="role-option">
-                                    <input type="radio" name="role" id="role_gerente" value="gerente">
-                                    <label for="role_gerente">
-                                        <i class="fas fa-user-tie text-primary"></i>
-                                        <span>Gerente</span>
-                                    </label>
-                                </div>
-                                <div class="role-option">
-                                    <input type="radio" name="role" id="role_almacenista" value="almacenista">
+                                    <input type="radio" name="role" id="role_almacenista" value="almacenista" required>
                                     <label for="role_almacenista">
                                         <i class="fas fa-boxes text-success"></i>
                                         <span>Almacenista</span>
@@ -50,8 +36,9 @@
                                     </label>
                                 </div>
                             </div>
+                            <small class="text-muted"><i class="fas fa-info-circle"></i> Si necesitas acceso de Gerente o Super Usuario, contacta a un administrador del sistema.</small>
                             @error('role')
-                                <div class="alert alert-danger">{{ $message }}</div>
+                                <div class="alert alert-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
 
@@ -92,19 +79,7 @@
                             </div>
                         </div>
 
-                        <div id="adminAuthFields" class="conditional-fields form-section">
-                            <div class="form-section-title">
-                                <i class="fas fa-lock"></i> Verificación de Rol Privilegiado
-                            </div>
-                            <div class="alert alert-warning">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                Para registrarse con este rol, debe ingresar la contraseña de autorización administrativa.
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Contraseña de Autorización</label>
-                                <input type="password" name="admin_password" id="admin_password" class="form-control">
-                            </div>
-                        </div>
+                        {{-- Admin password hidden: gerente/super_usuario created from admin panel only --}}
 
                         <div id="proveedorFields" class="conditional-fields form-section">
                             <div class="form-section-title">
