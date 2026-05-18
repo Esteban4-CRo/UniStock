@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('longitud', 11, 8)->nullable();
             $table->string('ciudad')->nullable();
             $table->string('pais')->default('Colombia');
+            $table->boolean('activo')->default(true);
             $table->timestamps();
         });
     }

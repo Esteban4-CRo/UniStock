@@ -35,6 +35,15 @@
                         <i class="fas fa-user"></i> Información Básica
                     </div>
                     <div class="row">
+                        @if(auth()->user()->isSuperUsuario() && auth()->id() !== $user->id)
+                        <div class="col-md-12 mb-4">
+                            <div class="form-check form-switch p-0" style="margin-left: 25px;">
+                                <input class="form-check-input" type="checkbox" id="activo" name="activo" value="1" {{ old('activo', $user->activo) ? 'checked' : '' }} style="width: 40px; height: 20px; float: left; margin-right: 12px; cursor: pointer;">
+                                <label class="form-check-label fw-bold text-dark" for="activo" style="cursor: pointer;">Usuario Activo / Acceso Habilitado</label>
+                                <span class="d-block text-muted small" style="margin-left: 52px;"><i class="fas fa-exclamation-triangle text-muted me-1"></i> Desmarque esta opción si desea suspender el acceso de este usuario. Se cerrarán de inmediato todas sus sesiones activas (CheckUserActive).</span>
+                            </div>
+                        </div>
+                        @endif
                         <div class="col-md-6 mb-3">
                             <label for="name" class="form-label">Nombre Completo *</label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $user->name) }}" required>

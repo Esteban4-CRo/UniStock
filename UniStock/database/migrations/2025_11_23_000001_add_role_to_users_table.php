@@ -12,13 +12,14 @@ return new class extends Migration
             $table->enum('role', ['super_usuario', 'gerente', 'almacenista', 'proveedor'])
                   ->default('almacenista')
                   ->after('email');
+            $table->boolean('activo')->default(true)->after('role');
         });
     }
 
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
+            $table->dropColumn(['role', 'activo']);
         });
     }
 };

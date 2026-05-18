@@ -9,7 +9,7 @@ class ProveedorController extends Controller
 {
     public function index()
     {
-        $proveedores = Proveedor::all();
+        $proveedores = Proveedor::where('activo', true)->get();
         return view('proveedores.index', compact('proveedores'));
     }
 
@@ -65,7 +65,7 @@ class ProveedorController extends Controller
 
     public function destroy(Proveedor $proveedor)
     {
-        $proveedor->delete();
-        return redirect()->route('proveedores.index')->with('success', 'Proveedor eliminado exitosamente.');
+        $proveedor->update(['activo' => false]);
+        return redirect()->route('proveedores.index')->with('success', 'Proveedor inhabilitado exitosamente.');
     }
 }

@@ -1,54 +1,82 @@
 @extends('layouts.app')
 
-@section('content')
+@section('title', 'Registrar Salida - UniStock')
 
-    <div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="mb-0"><i class="fas fa-plus-circle"></i> Registrar nueva salida</h3>
+@section('content')
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+        <div class="mb-4">
+            <a href="{{ route('salidas.index') }}" class="btn btn-sm btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Volver al Historial
+            </a>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header border-0 py-3">
+                <h4 class="fw-bold text-dark mb-0"><i class="fas fa-arrow-up me-2 text-dark"></i> Registrar Salida de Inventario</h4>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form action="{{ route('salidas.store') }}" method="POST">
                     @csrf
 
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">Material y Destino</h5>
+
                     <div class="mb-3">
-                        <label for="codigo" class="form-label">Producto <span class="badge badge-info">Único</span></label>
-                        <select id="producto_id" class="form-select form-select-lg rounded-pill shadow-sm" name="producto_id" required>
-                            
-                        <option value="">Seleccionar Producto</option>
-                        @foreach($productos as $producto)
-                        <option value="{{ $producto->id }}" 
-                            {{ old('producto_id', $producto_id) == $producto->id ? 'selected' : '' }}>
-                            {{ $producto->nombre }} (Stock: {{ $producto->stock_actual }})
-                        </option>
-                        @endforeach
-                    </select>
-                    @error('producto_id') <div class="error">{{ $message }}</div> @enderror
+                        <label for="material_prima_id" class="form-label">Materia Prima a Retirar <span class="text-danger">*</span></label>
+                        <select class="form-select @error('material_prima_id') is-invalid @enderror" id="material_prima_id" name="material_prima_id" required>
+                            <option value="" disabled selected>Seleccione la materia prima...</option>
+                            @foreach($materiales as $material)
+                                <option value="{{ $material->id }}" {{ old('material_prima_id', $material_prima_id) == $material->id ? 'selected' : '' }}>
+                                    {{ $material->nombre }} (Cód: {{ $material->codigo }} | Stock Disponible: {{ $material->cantidad }} {{ $material->unidad_medida }})
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('material_prima_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="cantidad" class="form-label">Cantidad</label>
-                        <input type="number" class="form-control @error('cantidad') is-invalid @enderror" id="cantidad" name="cantidad" min="1" value="{{ old('cantidad') }}" required>
-                        @error('cantidad') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                        <label for="destino" class="form-label">Destino / Uso del Insumo <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control @error('destino') is-invalid @enderror" id="destino" name="destino" value="{{ old('destino') }}" placeholder="Ej. Área de Panificación, Planta de Envasado, Descarte por merma" required>
+                        @error('destino')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="text-muted mt-1 d-block"><i class="fas fa-info-circle me-1"></i> Obligatorio: debe registrar adónde se despacha físicamente la materia prima (UNI-020).</small>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="motivo" class="form-label">Motivo de la salida</label>
-                        <textarea class="form-control @error('motivo') is-invalid @enderror" id="motivo" name="motivo" rows="3">{{ old('motivo') }}</textarea>
-                        @error('motivo') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">Detalle del Despacho</h5>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="cantidad" class="form-label">Cantidad a Retirar <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control @error('cantidad') is-invalid @enderror" id="cantidad" name="cantidad" value="{{ old('cantidad') }}" min="1" placeholder="Ej. 10" required>
+                            @error('cantidad')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="lote" class="form-label">Código de Lote a Retirar</label>
+                            <input type="text" class="form-control @error('lote') is-invalid @enderror" id="lote" name="lote" value="{{ old('lote') }}" placeholder="Ej. LOTE-1234 (Opcional)">
+                            @error('lote')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="motivo" class="form-label">Motivo o Justificación de Salida</label>
+                            <textarea class="form-control @error('motivo') is-invalid @enderror" id="motivo" name="motivo" rows="3" placeholder="Ej. Producción de lote semanal de pan molde. Aprobado por jefe de cocina.">{{ old('motivo') }}</textarea>
+                            @error('motivo')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
 
-                   
-
-                    
-                    <div class="d-flex gap-2 pt-3 border-top">
-                        <button type="submit" class="btn btn-success flex-grow-1">
-                            <i class="fas fa-save"></i> Guardar Salida
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary py-2 fw-bold text-white">
+                            <i class="fas fa-save me-2"></i> Registrar Salida
                         </button>
-                        <a href="{{ route('salidas.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Cancelar
-                        </a>
                     </div>
                 </form>
             </div>

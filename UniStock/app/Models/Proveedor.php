@@ -21,6 +21,7 @@ class Proveedor extends Model
         'longitud',
         'ciudad',
         'pais',
+        'activo',
     ];
 
     protected $casts = [
@@ -39,6 +40,14 @@ class Proveedor extends Model
         return $this->belongsToMany(MaterialPrima::class, 'auxiliar_almacena')
                     ->withPivot('cantidad', 'fecha_almacenamiento')
                     ->withTimestamps();
+    }
+
+    /**
+     * Relación con las entradas de materias primas que provienen de este proveedor.
+     */
+    public function entradas()
+    {
+        return $this->hasMany(Entrada::class, 'proveedor_id');
     }
 
     public function getGoogleMapsUrlAttribute()

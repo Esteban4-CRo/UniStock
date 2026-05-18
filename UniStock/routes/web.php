@@ -2,13 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\MaterialPrimaController;
+use App\Http\Controllers\UbicacionController;
 use App\Http\Controllers\EntradaController;
 use App\Http\Controllers\SalidaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProductHistoryReportController;
+use App\Http\Controllers\MaterialPrimaHistoryReportController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ProveedorController;
 
@@ -18,49 +19,77 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::middleware(['auth', 'prevent-back'])->group(function () {
+// Añadir el middleware 'check-active' a todas las rutas protegidas
+Route::middleware(['auth', 'prevent-back', 'check-active'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-    // Rutas para perfil
+    // Rutas para perfil de usuario
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile/photo', [ProfileController::class, 'deletePhoto'])->name('profile.deletePhoto');
 
-    // Rutas para usuarios
-    Route::resource('usuarios', UserController::class);
+    // Rutas para usuarios (Administrador)
+    Route::resource('usuarios', UserController::class)->parameters([
+        'usuarios' => 'usuario'
+    ]);
 
     // Rutas para proveedores
-    Route::resource('proveedores', ProveedorController::class);
-    // Rutas para productos
-    Route::get('/productos', [ProductoController::class, 'index'])->name('productos.index');
-    Route::get('/productos/create', [ProductoController::class, 'create'])->name('productos.create');
-    Route::post('/productos', [ProductoController::class, 'store'])->name('productos.store');
-    Route::get('/productos/{producto}', [ProductoController::class, 'show'])->name('productos.show');
-    Route::get('/productos/{producto}/edit', [ProductoController::class, 'edit'])->name('productos.edit');
-    Route::put('/productos/{producto}', [ProductoController::class, 'update'])->name('productos.update');
-    Route::delete('/productos/{producto}', [ProductoController::class, 'destroy'])->name('productos.destroy');
+    Route::resource('proveedores', ProveedorController::class)->parameters([
+        'proveedores' => 'proveedor'
+    ]);
 
-    // Rutas para entradas
+    // Rutas para ubicaciones físicas de almacén
+    Route::resource('ubicaciones', UbicacionController::class)->parameters([
+        'ubicaciones' => 'ubicacion'
+    ]);
+
+    // Rutas para materias primas
+    Route::resource('materias-primas', MaterialPrimaController::class)->parameters([
+        'materias-primas' => 'materiales_prima'
+    ]);
+
+    // Rutas para entradas de inventario
     Route::get('/entradas', [EntradaController::class, 'index'])->name('entradas.index');
     Route::get('/entradas/create', [EntradaController::class, 'create'])->name('entradas.create');
     Route::post('/entradas', [EntradaController::class, 'store'])->name('entradas.store');
+    Route::get('/entradas/{entrada}/edit', [EntradaController::class, 'edit'])->name('entradas.edit');
+    Route::put('/entradas/{entrada}', [EntradaController::class, 'update'])->name('entradas.update');
+    Route::post('/entradas/{entrada}/anular', [EntradaController::class, 'anular'])->name('entradas.anular');
 
-    // Rutas para salidas
+    // Rutas para salidas de inventario
     Route::get('/salidas', [SalidaController::class, 'index'])->name('salidas.index');
     Route::get('/salidas/create', [SalidaController::class, 'create'])->name('salidas.create');
     Route::post('/salidas', [SalidaController::class, 'store'])->name('salidas.store');
+    Route::get('/salidas/{salida}/edit', [SalidaController::class, 'edit'])->name('salidas.edit');
+    Route::put('/salidas/{salida}', [SalidaController::class, 'update'])->name('salidas.update');
+    Route::post('/salidas/{salida}/anular', [SalidaController::class, 'anular'])->name('salidas.anular');
 
-    // Registrar entrada desde vista de producto
-    Route::post('/productos/{producto}/entrada', [EntradaController::class, 'store'])
-        ->name('productos.entrada.store');
+    // Registrar entrada desde vista de materia prima
+    Route::post('/materias-primas/{materiales_prima}/entrada', [EntradaController::class, 'store'])
+        ->name('materias-primas.entrada.store');
 
-    // Registrar salida desde vista de producto
-    Route::post('/productos/{producto}/salida', [SalidaController::class, 'store'])
-        ->name('productos.salida.store');
+    // Registrar salida desde vista de materia prima
+    Route::post('/materias-primas/{materiales_prima}/salida', [SalidaController::class, 'store'])
+        ->name('materias-primas.salida.store');
 
-    // Route for generating product history report
-    Route::post('/reports/product-history', [ProductHistoryReportController::class, 'generateReport'])->name('reports.product-history');
+    // Generar reporte de historial de materia prima (PDF)
+    Route::post('/reports/material-history', [MaterialPrimaHistoryReportController::class, 'generateReport'])
+        ->name('reports.material-history');
 
-    // Route for viewing generated reports
+    // Listado de reportes generados
     Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');
+
+    // Descarga manual de base de datos sqlite (Copia de seguridad)
+    Route::get('/backup/download', [\App\Http\Controllers\BackupController::class, 'download'])
+        ->name('backup.download');
+
+    // Exportación de Reportes a Excel (.csv compatible con Microsoft Excel)
+    Route::get('/excel/inventario', [\App\Http\Controllers\ExcelExportController::class, 'exportInventario'])
+        ->name('excel.inventario');
+    Route::get('/excel/inventario/preview', [\App\Http\Controllers\ExcelExportController::class, 'previewInventario'])
+        ->name('excel.inventario.preview');
+    Route::get('/excel/movimientos', [\App\Http\Controllers\ExcelExportController::class, 'exportMovimientos'])
+        ->name('excel.movimientos');
+    Route::get('/excel/movimientos/preview', [\App\Http\Controllers\ExcelExportController::class, 'previewMovimientos'])
+        ->name('excel.movimientos.preview');
 });

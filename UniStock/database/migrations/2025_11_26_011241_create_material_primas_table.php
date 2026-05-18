@@ -13,13 +13,18 @@ return new class extends Migration
     {
         Schema::create('material_primas', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
+            $table->string('codigo')->unique();
+            $table->string('nombre')->unique();
             $table->text('descripcion')->nullable();
-            $table->integer('cantidad')->default(0);
+            $table->integer('cantidad')->default(0); // stock actual
             $table->string('unidad_medida')->default('unidad'); // kg, litros, unidad, etc
-            $table->decimal('stock_minimo', 10, 2)->default(0);
-            $table->decimal('stock_maximo', 10, 2)->nullable();
-            $table->date('fecha_vencimiento')->nullable();
+            $table->integer('stock_minimo')->default(0);
+            $table->decimal('precio', 10, 2)->default(0.00);
+            $table->string('lote')->nullable();
+            $table->date('fecha_caducidad')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('ubicacion_id')->nullable()->constrained('ubicaciones')->onDelete('set null');
+            $table->boolean('activo')->default(true);
             $table->timestamps();
         });
     }

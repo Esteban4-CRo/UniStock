@@ -11,7 +11,7 @@ class Reporte extends Model
 
     protected $fillable = [
         'user_id',
-        'producto_id',
+        'material_prima_id',
         'reporte_nombre',
         'fecha_generacion',
         'tipo',
@@ -32,9 +32,9 @@ class Reporte extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function producto()
+    public function materialPrima()
     {
-        return $this->belongsTo(Producto::class);
+        return $this->belongsTo(MaterialPrima::class, 'material_prima_id');
     }
 
     // Métodos del diagrama

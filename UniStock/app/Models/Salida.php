@@ -9,15 +9,36 @@ class Salida extends Model
 {
     use HasFactory;
 
+    protected $table = 'salidas';
+
     protected $fillable = [
-        'producto_id',
+        'material_prima_id',
+        'user_id',
         'cantidad',
-        'motivo'
+        'lote',
+        'destino',
+        'motivo',
+        'anulado'
     ];
 
-    public function producto()
+    protected $casts = [
+        'anulado' => 'boolean',
+    ];
+
+    /**
+     * Relación con la materia prima despachada.
+     */
+    public function materialPrima()
     {
-        return $this->belongsTo(Producto::class);
+        return $this->belongsTo(MaterialPrima::class, 'material_prima_id');
+    }
+
+    /**
+     * Relación con el usuario (almacenista) que registró la salida.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     // Métodos del diagrama (MovimientoInventario)

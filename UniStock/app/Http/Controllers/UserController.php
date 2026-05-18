@@ -44,12 +44,13 @@ class UserController extends Controller
                 ->with('error', 'No tienes permisos para crear usuarios.');
         }
 
-        $roles = [
-            User::ROLE_SUPER_USUARIO => 'Super Usuario',
-            User::ROLE_GERENTE => 'Gerente',
-            User::ROLE_ALMACENISTA => 'Almacenista',
-            User::ROLE_PROVEEDOR => 'Proveedor',
-        ];
+        $roles = [];
+        if (auth()->user()->isSuperUsuario()) {
+            $roles[User::ROLE_SUPER_USUARIO] = 'Super Usuario';
+            $roles[User::ROLE_GERENTE] = 'Gerente';
+        }
+        $roles[User::ROLE_ALMACENISTA] = 'Almacenista';
+        $roles[User::ROLE_PROVEEDOR] = 'Proveedor';
 
         return view('usuarios.create', compact('roles'));
     }
@@ -81,6 +82,13 @@ class UserController extends Controller
         }
 
         $request->validate($rules);
+
+        // Si es un Gerente, no puede crear un Super Usuario ni un Gerente
+        if (auth()->user()->isGerente() && in_array($request->role, [User::ROLE_SUPER_USUARIO, User::ROLE_GERENTE])) {
+            return redirect()->back()
+                ->with('error', 'No tienes permisos para asignar roles directivos (Super Usuario o Gerente).')
+                ->withInput();
+        }
 
         if ($request->role === User::ROLE_GERENTE) {
             $adminPassword = env('ADMIN_CREATE_GERENTE_PASSWORD', 'pepelin123');
@@ -143,14 +151,21 @@ class UserController extends Controller
                 ->with('error', 'No tienes permisos para editar este usuario.');
         }
 
+        // Un gerente no puede editar a un Super Usuario ni a otro Gerente (excepto a sí mismo)
+        if (auth()->user()->isGerente() && $usuario->id !== auth()->id() && ($usuario->isSuperUsuario() || $usuario->isGerente())) {
+            return redirect()->route('usuarios.index')
+                ->with('error', 'No tienes permisos para editar a este usuario directivo.');
+        }
+
         $usuario->load(['profile', 'proveedor']);
         
-        $roles = [
-            User::ROLE_SUPER_USUARIO => 'Super Usuario',
-            User::ROLE_GERENTE => 'Gerente',
-            User::ROLE_ALMACENISTA => 'Almacenista',
-            User::ROLE_PROVEEDOR => 'Proveedor',
-        ];
+        $roles = [];
+        if (auth()->user()->isSuperUsuario()) {
+            $roles[User::ROLE_SUPER_USUARIO] = 'Super Usuario';
+            $roles[User::ROLE_GERENTE] = 'Gerente';
+        }
+        $roles[User::ROLE_ALMACENISTA] = 'Almacenista';
+        $roles[User::ROLE_PROVEEDOR] = 'Proveedor';
 
         return view('usuarios.edit', ['user' => $usuario, 'roles' => $roles]);
     }
@@ -160,6 +175,12 @@ class UserController extends Controller
         if (!auth()->user()->gestionarUsuarios() && auth()->id() !== $usuario->id) {
             return redirect()->route('usuarios.index')
                 ->with('error', 'No tienes permisos para actualizar este usuario.');
+        }
+
+        // Un gerente no puede editar a un Super Usuario ni a otro Gerente (excepto a sí mismo)
+        if (auth()->user()->isGerente() && $usuario->id !== auth()->id() && ($usuario->isSuperUsuario() || $usuario->isGerente())) {
+            return redirect()->route('usuarios.index')
+                ->with('error', 'No tienes permisos para actualizar a este usuario directivo.');
         }
 
         $rules = [
@@ -182,6 +203,10 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email
         ];
+
+        if (auth()->user()->isSuperUsuario() && $usuario->id !== auth()->id()) {
+            $data['activo'] = $request->has('activo');
+        }
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
@@ -238,22 +263,24 @@ class UserController extends Controller
     {
         if (!auth()->user()->gestionarUsuarios()) {
             return redirect()->route('usuarios.index')
-                ->with('error', 'No tienes permisos para eliminar usuarios.');
+                ->with('error', 'No tienes permisos para inhabilitar usuarios.');
         }
 
         if ($usuario->id === auth()->id()) {
             return redirect()->route('usuarios.index')
-                             ->with('error', 'No puedes eliminar tu propia cuenta.');
+                             ->with('error', 'No puedes inhabilitar tu propia cuenta.');
         }
 
-        if ($usuario->photo) {
-            Storage::disk('public')->delete($usuario->photo);
+        // Un gerente no puede inhabilitar a un Super Usuario ni a otro Gerente
+        if (auth()->user()->isGerente() && ($usuario->isSuperUsuario() || $usuario->isGerente())) {
+            return redirect()->route('usuarios.index')
+                ->with('error', 'No tienes permisos para inhabilitar a este usuario directivo.');
         }
 
-        $usuario->delete();
+        $usuario->update(['activo' => false]);
 
         return redirect()->route('usuarios.index')
-                         ->with('success', 'Usuario eliminado exitosamente.');
+                         ->with('success', 'Usuario inhabilitado exitosamente.');
     }
 }
 

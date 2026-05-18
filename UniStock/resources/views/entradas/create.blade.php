@@ -1,54 +1,98 @@
 @extends('layouts.app')
 
-@section('content')
+@section('title', 'Registrar Entrada - UniStock')
 
-    <div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="mb-0"><i class="fas fa-plus-circle"></i> Registrar nueva entrada</h3>
+@section('content')
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+        <div class="mb-4">
+            <a href="{{ route('entradas.index') }}" class="btn btn-sm btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Volver al Historial
+            </a>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header border-0 py-3">
+                <h4 class="fw-bold text-dark mb-0"><i class="fas fa-arrow-down me-2 text-dark"></i> Registrar Entrada de Inventario</h4>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form action="{{ route('entradas.store') }}" method="POST">
                     @csrf
 
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">Origen y Destino</h5>
+
                     <div class="mb-3">
-                        <label for="codigo" class="form-label">Producto <span class="badge badge-info">Único</span></label>
-                        <select id="producto_id" class="form-select form-select-lg rounded-pill shadow-sm" name="producto_id" required>
-                            
-                        <option value="">Seleccionar Producto</option>
-                        @foreach($productos as $producto)
-                        <option value="{{ $producto->id }}" 
-                            {{ old('producto_id', $producto_id) == $producto->id ? 'selected' : '' }}>
-                            {{ $producto->nombre }} (Stock: {{ $producto->stock_actual }})
-                        </option>
-                        @endforeach
-                    </select>
-                    @error('producto_id') <div class="error">{{ $message }}</div> @enderror
+                        <label for="material_prima_id" class="form-label">Materia Prima <span class="text-danger">*</span></label>
+                        <select class="form-select @error('material_prima_id') is-invalid @enderror" id="material_prima_id" name="material_prima_id" required>
+                            <option value="" disabled selected>Seleccione la materia prima...</option>
+                            @foreach($materiales as $material)
+                                <option value="{{ $material->id }}" {{ old('material_prima_id', $material_prima_id) == $material->id ? 'selected' : '' }}>
+                                    {{ $material->nombre }} (Cód: {{ $material->codigo }} | Stock: {{ $material->cantidad }} {{ $material->unidad_medida }})
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('material_prima_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="cantidad" class="form-label">Cantidad</label>
-                        <input type="number" class="form-control @error('cantidad') is-invalid @enderror" id="cantidad" name="cantidad" min="1" value="{{ old('cantidad') }}" required>
-                        @error('cantidad') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                        <label for="proveedor_id" class="form-label">Proveedor de Origen <span class="text-danger">*</span></label>
+                        <select class="form-select @error('proveedor_id') is-invalid @enderror" id="proveedor_id" name="proveedor_id" required>
+                            <option value="" disabled selected>Seleccione el proveedor...</option>
+                            @foreach($proveedores as $proveedor)
+                                <option value="{{ $proveedor->id }}" {{ old('proveedor_id') == $proveedor->id ? 'selected' : '' }}>
+                                    {{ $proveedor->empresa }} (RUC: {{ $proveedor->ruc }} | {{ $proveedor->ciudad }})
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('proveedor_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="text-muted mt-1 d-block"><i class="fas fa-info-circle me-1"></i> Obligatorio: toda materia prima debe venir de un proveedor verificado.</small>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="motivo" class="form-label">Motivo de la entrada</label>
-                        <textarea class="form-control @error('motivo') is-invalid @enderror" id="motivo" name="motivo" rows="3">{{ old('motivo') }}</textarea>
-                        @error('motivo') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">Detalle de Recepción</h5>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="cantidad" class="form-label">Cantidad a Ingresar <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control @error('cantidad') is-invalid @enderror" id="cantidad" name="cantidad" value="{{ old('cantidad') }}" min="1" placeholder="Ej. 50" required>
+                            @error('cantidad')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="lote" class="form-label">Código de Lote Recibido</label>
+                            <input type="text" class="form-control @error('lote') is-invalid @enderror" id="lote" name="lote" value="{{ old('lote') }}" placeholder="Ej. LOTE-NUEVO-77">
+                            @error('lote')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="fecha_caducidad" class="form-label">Fecha de Caducidad de este Lote</label>
+                            <input type="date" class="form-control @error('fecha_caducidad') is-invalid @enderror" id="fecha_caducidad" name="fecha_caducidad" value="{{ old('fecha_caducidad') }}">
+                            @error('fecha_caducidad')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted mt-1 d-block"><i class="fas fa-magic me-1"></i> Opción Simple: Esta fecha y lote sobreescribirán los valores vigentes de la materia prima.</small>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="motivo" class="form-label">Motivo o Notas de Recepción</label>
+                            <textarea class="form-control @error('motivo') is-invalid @enderror" id="motivo" name="motivo" rows="3" placeholder="Ej. Abastecimiento mensual programado. Producto en perfectas condiciones térmicas.">{{ old('motivo') }}</textarea>
+                            @error('motivo')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
 
-                   
-
-                    
-                    <div class="d-flex gap-2 pt-3 border-top">
-                        <button type="submit" class="btn btn-success flex-grow-1">
-                            <i class="fas fa-save"></i> Guardar Entrada
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary py-2 fw-bold text-white">
+                            <i class="fas fa-save me-2"></i> Registrar Entrada
                         </button>
-                        <a href="{{ route('entradas.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Cancelar
-                        </a>
                     </div>
                 </form>
             </div>

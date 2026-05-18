@@ -21,6 +21,7 @@ class User extends Authenticatable
         'password',
         'photo',
         'role',
+        'activo',
     ];
 
     protected $hidden = [
@@ -54,6 +55,11 @@ class User extends Authenticatable
     public function reportes()
     {
         return $this->hasMany(Reporte::class);
+    }
+
+    public function materialesPrimas()
+    {
+        return $this->hasMany(MaterialPrima::class);
     }
 
     public function isSuperUsuario()
@@ -130,9 +136,8 @@ class User extends Authenticatable
         return $this->save();
     }
 
-    // Métodos del diagrama (Administrador -> SuperUsuario)
     public function gestionarUsuarios() {
-        return $this->isSuperUsuario();
+        return $this->isSuperUsuario() || $this->isGerente();
     }
 
     public function configurarSistema() {

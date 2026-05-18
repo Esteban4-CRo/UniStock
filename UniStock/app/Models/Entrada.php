@@ -9,15 +9,46 @@ class Entrada extends Model
 {
     use HasFactory;
 
+    protected $table = 'entradas';
+
     protected $fillable = [
-        'producto_id',
+        'material_prima_id',
+        'user_id',
+        'proveedor_id',
         'cantidad',
-        'motivo'
+        'lote',
+        'fecha_caducidad',
+        'motivo',
+        'anulado'
     ];
 
-    public function producto()
+    protected $casts = [
+        'fecha_caducidad' => 'date',
+        'anulado' => 'boolean',
+    ];
+
+    /**
+     * Relación con la materia prima ingresada.
+     */
+    public function materialPrima()
     {
-        return $this->belongsTo(Producto::class);
+        return $this->belongsTo(MaterialPrima::class, 'material_prima_id');
+    }
+
+    /**
+     * Relación con el usuario (almacenista) que registró la entrada.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Relación con el proveedor de origen de la materia prima.
+     */
+    public function proveedor()
+    {
+        return $this->belongsTo(Proveedor::class, 'proveedor_id');
     }
 
     // Métodos del diagrama (MovimientoInventario)
