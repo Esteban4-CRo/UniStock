@@ -277,7 +277,10 @@ class UserController extends Controller
                 ->with('error', 'No tienes permisos para inhabilitar a este usuario directivo.');
         }
 
-        $usuario->update(['activo' => false]);
+        $usuario->update([
+            'activo' => false,
+            'email' => $usuario->email . '.inactivo.' . time(),
+        ]);
 
         return redirect()->route('usuarios.index')
                          ->with('success', 'Usuario inhabilitado exitosamente.');
