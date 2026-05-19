@@ -102,12 +102,12 @@
                 </div>
 
 
-                <div id="gerenteFields" class="form-section conditional-fields">
+                <div id="adminAuthFields" class="form-section conditional-fields">
                     <div class="form-section-title">
                         <i class="fas fa-shield-alt"></i> Autenticación Especial
                     </div>
                     <div class="alert alert-warning">
-                        <i class="fas fa-exclamation-triangle"></i> Para crear un usuario con rol de <strong>Gerente</strong>, debes ingresar la contraseña de autorización del Super Usuario.
+                        <i class="fas fa-exclamation-triangle"></i> Para crear un usuario con rol de <strong>Super Usuario</strong> o <strong>Gerente</strong>, debes ingresar la contraseña de autorización especial.
                     </div>
                     <div class="mb-3">
                         <label for="admin_password" class="form-label">Contraseña de Autorización *</label>

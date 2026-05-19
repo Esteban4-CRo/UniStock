@@ -18,7 +18,7 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $query = User::query();
+        $query = User::where('activo', true);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -70,7 +70,7 @@ class UserController extends Controller
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
 
-        if ($request->role === User::ROLE_GERENTE) {
+        if ($request->role === User::ROLE_GERENTE || $request->role === User::ROLE_SUPER_USUARIO) {
             $rules['admin_password'] = 'required';
         }
 
@@ -90,7 +90,7 @@ class UserController extends Controller
                 ->withInput();
         }
 
-        if ($request->role === User::ROLE_GERENTE) {
+        if ($request->role === User::ROLE_GERENTE || $request->role === User::ROLE_SUPER_USUARIO) {
             $adminPassword = env('ADMIN_CREATE_GERENTE_PASSWORD', 'pepelin123');
             if ($request->admin_password !== $adminPassword) {
                 return back()->withErrors(['admin_password' => 'Contraseña de autorización incorrecta.'])->withInput();
