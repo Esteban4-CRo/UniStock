@@ -17,6 +17,20 @@ Route::get('/', function () {
     return view('welcome_index');
 })->name('welcome');
 
+Route::get('/run-migrations', function () {
+    try {
+        echo "Limpiando base de datos y corriendo migraciones con seeders en Supabase...<br>";
+        \Illuminate\Support\Facades\Artisan::call('migrate:fresh', [
+            '--seed' => true,
+            '--force' => true,
+        ]);
+        echo "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
+        echo "<br><b>¡Completado con éxito! Ahora puedes ir a iniciar sesión.</b>";
+    } catch (\Exception $e) {
+        echo "Error: " . $e->getMessage();
+    }
+});
+
 Auth::routes();
 
 // Añadir el middleware 'check-active' a todas las rutas protegidas
