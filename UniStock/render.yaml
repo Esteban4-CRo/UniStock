@@ -4,11 +4,12 @@ services:
     env: docker
     plan: free
     rootDir: .
+    preDeployCommand: php artisan migrate --seed --force
     envVars:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
-        value: false
+        value: true
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
