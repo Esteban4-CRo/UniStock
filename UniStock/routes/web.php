@@ -17,15 +17,6 @@ Route::get('/', function () {
     return view('welcome_index');
 })->name('welcome');
 
-Route::get('/liberar-correo', function() {
-    $user = \App\Models\User::where('email', 'gustavo1908salazar@gmail.com')->first();
-    if ($user) {
-        $user->update(['email' => 'gustavo-inactivo-' . time() . '@gmail.com']);
-        return "Correo liberado con éxito. Ya puedes registrarte.";
-    }
-    return "El correo ya no estaba en uso.";
-});
-
 Auth::routes();
 
 // Añadir el middleware 'check-active' a todas las rutas protegidas
