@@ -81,201 +81,270 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     @vite(['resources/js/app.js'])
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg-main: #050505;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --card-hover-border: rgba(255, 255, 255, 0.2);
+            --nav-bg: rgba(255, 255, 255, 0.03);
+            --hover-bg: rgba(255, 255, 255, 0.1);
+            --btn-primary-bg: #ffffff;
+            --btn-primary-text: #000000;
+            --logo-filter: brightness(0) invert(1);
+            --input-bg: rgba(255, 255, 255, 0.03);
+            --shadow-color: rgba(0, 0, 0, 0.8);
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f4f6f8;
+            --text-main: #111111;
+            --text-muted: #666666;
+            --card-bg: #ffffff;
+            --card-border: rgba(0, 0, 0, 0.08);
+            --card-hover-border: rgba(0, 0, 0, 0.2);
+            --nav-bg: rgba(255, 255, 255, 0.9);
+            --hover-bg: rgba(0, 0, 0, 0.05);
+            --btn-primary-bg: #111111;
+            --btn-primary-text: #ffffff;
+            --logo-filter: none;
+            --input-bg: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+        }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #FAFAF9;
-            color: #0C0A09;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
             min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Transiciones globales y micro-interacciones suaves */
+        /* Transiciones globales */
         .btn, .nav-link, .card, .form-control, .form-select, .dropdown-item {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
         }
 
-        /* Cursor pointer obligatorio para elementos interactivos */
         .btn, .nav-link, .dropdown-item, .form-check-input, .pagination a, th[style*="cursor"] {
             cursor: pointer;
         }
 
         .navbar {
-            background: #1C1917;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             padding: 0.75rem 1.25rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            border-bottom: 1px solid #2E2A27;
+            border-bottom: 1px solid var(--card-border);
         }
 
         .navbar-brand { 
-            color: #ffffff !important; 
+            color: var(--text-main) !important; 
             font-weight: 700; 
             font-size: 1.5rem; 
             letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand img {
+            max-height: 60px; /* Logo más grande */
+            filter: var(--logo-filter);
+            transition: filter 0.3s ease;
         }
 
         .navbar-nav .nav-link { 
-            color: #E7E5E4 !important; 
+            color: var(--text-muted) !important; 
             font-weight: 500; 
             margin: 0 0.15rem; 
             padding: 0.5rem 0.85rem !important;
             font-size: 0.92rem;
+            border-radius: 8px;
         }
         
         .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active { 
-            color: #ffffff !important; 
-            background: #2E2A27; 
-            border-radius: 8px; 
+            color: var(--text-main) !important; 
+            background: var(--hover-bg); 
         }
 
         .dropdown-menu { 
-            background: #1C1917; 
-            border: 1px solid #2E2A27; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            border-radius: 8px;
-            padding: 0.4rem;
+            background: var(--card-bg); 
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border); 
+            box-shadow: 0 10px 30px var(--shadow-color);
+            border-radius: 12px;
+            padding: 0.5rem;
         }
         
         .dropdown-menu .dropdown-item { 
-            color: #E7E5E4; 
+            color: var(--text-main); 
             font-weight: 500;
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 0.5rem 1rem;
             font-size: 0.9rem;
         }
         
         .dropdown-menu .dropdown-item:hover { 
-            background: #2E2A27; 
-            color: #ffffff;
+            background: var(--hover-bg); 
+            color: var(--text-main);
         }
 
         .user-avatar { 
-            width: 30px; 
-            height: 30px; 
-            border-radius: 50%; 
-            object-fit: cover; 
+            width: 32px; 
+            height: 32px;
+            object-fit: cover;
+            border-radius: 50%;
+            transition: transform 0.3s ease; 
             margin-right: 0.5rem; 
-            border: 1.5px solid #2E2A27; 
+            border: 2px solid var(--card-border); 
+            background: var(--card-bg);
         }
 
-        /* Tarjetas Premium */
+        /* Tarjetas */
         .card { 
-            background: #ffffff; 
-            border: 1px solid #E7E5E4; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02); 
+            background: var(--card-bg); 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border); 
+            border-radius: 16px; 
+            color: var(--text-main);
         }
         
         .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(28,25,23,0.06);
+            border-color: var(--card-hover-border);
+            box-shadow: 0 12px 30px var(--shadow-color);
         }
         
         .card-header { 
-            background: #FAFAF9; 
-            color: #0C0A09; 
-            border-bottom: 1px solid #E7E5E4; 
+            background: transparent; 
+            color: var(--text-main); 
+            border-bottom: 1px solid var(--card-border); 
             font-weight: 700; 
-            padding: 1rem 1.5rem;
+            padding: 1.25rem 1.5rem;
         }
         
         .card-body { 
             padding: 1.5rem; 
         }
 
-        /* Botones e Indicadores Premium */
+        /* Botones */
         .btn { 
             border-radius: 8px; 
             font-weight: 600; 
             padding: 0.5rem 1.25rem;
             font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         .btn-primary { 
-            background: #1C1917; 
-            color: #ffffff; 
-            border: 1px solid #1C1917; 
+            background: var(--btn-primary-bg); 
+            color: var(--btn-primary-text); 
+            border: none; 
         }
         
         .btn-primary:hover { 
-            background: #2E2A27; 
-            border-color: #2E2A27;
+            opacity: 0.8;
+            transform: translateY(-2px);
         }
         
         .btn-secondary { 
-            background: #ffffff; 
-            color: #1C1917; 
-            border: 1px solid #E7E5E4; 
+            background: transparent; 
+            color: var(--text-main); 
+            border: 1px solid var(--card-border); 
         }
         
         .btn-secondary:hover { 
-            background: #F5F5F4; 
-            border-color: #D6D3D1;
+            background: var(--hover-bg); 
+            border-color: var(--text-main);
         }
         
         .btn-danger { 
-            background: #991B1B; 
-            color: #ffffff; 
-            border: 1px solid #991B1B; 
+            background: transparent; 
+            color: #ff4d4d; 
+            border: 1px solid #ff4d4d; 
         }
         
         .btn-danger:hover {
-            background: #7F1D1D;
-            border-color: #7F1D1D;
+            background: #ff4d4d;
+            color: #ffffff;
         }
 
         /* Tablas */
+        .table {
+            color: var(--text-main);
+        }
         .table thead th { 
-            background: #F5F5F4; 
-            color: #44403C; 
-            border-bottom: 2px solid #E7E5E4; 
+            background: var(--hover-bg); 
+            color: var(--text-muted); 
+            border-bottom: 1px solid var(--card-border); 
             font-weight: 600;
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            padding: 0.85rem 1rem;
+            padding: 1rem;
         }
         
         .table tbody tr { 
-            background: #ffffff; 
+            background: transparent; 
+            transition: all 0.2s;
+        }
+
+        .table tbody tr:hover {
+            background: var(--hover-bg);
         }
         
         .table tbody td {
             padding: 1rem;
-            border-bottom: 1px solid #E7E5E4;
-            color: #44403C;
+            border-bottom: 1px solid var(--card-border);
+            color: var(--text-main);
         }
 
         /* Formulario */
         .form-control, .form-select { 
-            border: 1px solid #D6D3D1; 
+            background: var(--input-bg);
+            border: 1px solid var(--card-border); 
             border-radius: 8px; 
-            padding: 0.55rem 0.85rem;
-            font-size: 0.92rem;
-            color: #0C0A09;
-            background-color: #ffffff;
+            padding: 0.6rem 1rem;
+            font-size: 0.95rem;
+            color: var(--text-main);
         }
         
         .form-control:focus, .form-select:focus { 
-            box-shadow: 0 0 0 3px rgba(202,138,4,0.15); 
-            border-color: #CA8A04; 
+            background: var(--input-bg);
+            box-shadow: none; 
+            border-color: var(--text-main); 
+            color: var(--text-main);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
         }
 
         .form-label { 
             font-weight: 600; 
-            color: #1C1917; 
-            margin-bottom: 0.4rem;
-            font-size: 0.9rem;
+            color: var(--text-muted); 
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .badge { 
-            background: #44403C; 
-            color: #ffffff; 
+            background: var(--hover-bg); 
+            color: var(--text-main); 
             padding: 0.4rem 0.8rem; 
             border-radius: 20px; 
             font-weight: 600; 
             font-size: 0.78rem;
+            border: 1px solid var(--card-border);
+        }
+
+        .text-muted {
+            color: var(--text-muted) !important;
         }
 
         .container { 
@@ -288,7 +357,20 @@
             min-height: calc(100vh - 90px); 
         }
 
-        /* Animaciones para carga o cambios de estado */
+        /* Modal */
+        .modal-content {
+            background: var(--bg-main);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            color: var(--text-main);
+        }
+        .modal-header {
+            border-bottom: 1px solid var(--card-border);
+        }
+        .modal-footer {
+            border-top: 1px solid var(--card-border);
+        }
+
         @media (prefers-reduced-motion: reduce) {
             * {
                 animation-duration: 0.01ms !important;
@@ -298,14 +380,16 @@
             }
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/theme.css') }}" />
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <nav class="navbar navbar-expand-lg sticky-top glass" style="z-index: 1040; border-bottom: 1px solid var(--border);">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('home') }}">
-                <i class="fas fa-cube"></i> UniStock
+                <img src="{{ asset('images/logo.png') }}" alt="UniStock Logo" onerror="this.onerror=null; this.src=''; this.alt='[Logo]'" style="max-height: 80px; filter: var(--logo-filter);">
             </a>
+            <button id="themeToggle" class="btn btn-link text-white ms-3" style="font-size:1.2rem;" title="Toggle Dark/Light Theme"><i class="fas fa-moon"></i></button>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -426,13 +510,21 @@
                         </li>
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                @if(Auth::user()->photo)
-                                    <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Avatar" class="user-avatar">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                @php
+                                    $photoUrl = Auth::user()->photo;
+                                    if ($photoUrl && !str_starts_with($photoUrl, 'http')) {
+                                        $photoUrl = asset('storage/' . $photoUrl);
+                                    }
+                                @endphp
+                                @if($photoUrl)
+                                    <img src="{{ $photoUrl }}" alt="Avatar" class="user-avatar" onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';">
                                 @else
-                                    <i class="fas fa-user-circle"></i>
+                                    <div class="user-avatar d-flex align-items-center justify-content-center" style="background: rgba(255,255,255,0.1);">
+                                        <i class="fas fa-user" style="color: #ffffff;"></i>
+                                    </div>
                                 @endif
-                                {{ Auth::user()->name }}
+                                <span class="ms-2">{{ Auth::user()->name }}</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-user"></i> Mi Perfil</a></li>
@@ -457,7 +549,47 @@
     </nav>
 
     <main>
-        <div class="container">
+        <!-- Hero / Slider Section -->
+        @if (Route::is('home') || Route::is('welcome'))
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/10.0.4/swiper-bundle.min.css" />
+        <div class="slider-wrapper w-100 m-0 p-0" style="max-width: 100%;">
+            <div class="swiper mySwiper" style="width:100%; height:400px; background: transparent;">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" style="border: none; box-shadow: none;"><img src="{{ asset('images/1.gif') }}" class="d-block w-100 h-100 object-fit-cover" alt="Slide 1"></div>
+                    <div class="swiper-slide" style="border: none; box-shadow: none;"><img src="{{ asset('images/2.gif') }}" class="d-block w-100 h-100 object-fit-cover" alt="Slide 2"></div>
+                    <div class="swiper-slide" style="border: none; box-shadow: none;"><img src="{{ asset('images/3.gif') }}" class="d-block w-100 h-100 object-fit-cover" alt="Slide 3"></div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/10.0.4/swiper-bundle.min.js"></script>
+        <script>
+            const swiper = new Swiper('.mySwiper', {
+                effect: 'coverflow',
+                grabCursor: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                coverflowEffect: {
+                    rotate: 30,
+                    stretch: 0,
+                    depth: 150,
+                    modifier: 1,
+                    slideShadows: true,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                loop: true,
+                autoplay: {
+                    delay: 4000,
+                    disableOnInteraction: false,
+                },
+            });
+        </script>
+        @endif
+        
+        <div class="container mt-4">
 
             @if ($errors->any())
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -488,8 +620,9 @@
     @if(Auth::check() && !session()->get('login_notified') && count($alertasNotif) > 0)
         @php
             // Encontrar la alerta más importante (danger > warning > info > success)
+            $levels = ['danger', 'warning', 'info', 'success'];
             $alertaPrioritaria = null;
-            foreach (['danger', 'warning', 'info', 'success'] as $nivel) {
+            foreach ($levels as $nivel) {
                 foreach ($alertasNotif as $a) {
                     if ($a['nivel'] === $nivel) {
                         $alertaPrioritaria = $a;
@@ -646,6 +779,194 @@
             });
         });
     });
+    </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const themeToggle = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) root.dataset.theme = savedTheme;
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const newTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = newTheme;
+      localStorage.setItem('theme', newTheme);
+    });
+  }
+});
+</script>
+    <!-- AI Assistant Widget -->
+    <div id="ai-assistant-widget" style="position: fixed; bottom: 30px; right: 30px; z-index: 9999;">
+        <!-- Chat Window -->
+        <div id="ai-chat-window" style="display: none; width: 380px; height: 500px; background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(20px); border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); flex-direction: column; overflow: hidden; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease;">
+            <!-- Header -->
+            <div style="background: rgba(255,255,255,0.05); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 30px; height: 30px; border-radius: 50%; background: #ffffff; color: #000; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <span style="font-weight: 600; font-family: 'Inter', sans-serif;">Asistente UniStock</span>
+                </div>
+                <button onclick="toggleAiChat()" style="background: none; border: none; color: white; cursor: pointer; opacity: 0.7; transition: opacity 0.2s;"><i class="fas fa-times"></i></button>
+            </div>
+            
+        {{-- Duplicate slider removed --}}
+
+            <!-- Messages -->
+            <div id="ai-chat-messages" style="flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: transparent;">
+                <div style="align-self: flex-start; background: rgba(255,255,255,0.08); color: #ffffff; padding: 12px 16px; border-radius: 14px; border-bottom-left-radius: 4px; max-width: 85%; font-size: 0.9rem; line-height: 1.4;">
+                    ¡Hola! Soy tu asistente de UniStock con visión global. Pregúntame sobre el stock, los proveedores o los reportes recientes.
+                </div>
+            </div>
+            <!-- Input Area -->
+            <div style="padding: 15px; background: rgba(255,255,255,0.03); border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; align-items: center;">
+                <button id="ai-mic-btn" onclick="toggleVoiceRecognition()" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); width: 42px; height: 42px; border-radius: 50%; cursor: pointer; color: #ffffff; transition: all 0.2s; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <input type="text" id="ai-chat-input" placeholder="Escribe tu mensaje..." style="flex: 1; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: #ffffff; border-radius: 20px; padding: 10px 16px; font-size: 0.9rem; outline: none;">
+                <button onclick="sendAiMessage()" style="background: #ffffff; border: none; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; color: #000000; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Floating Button -->
+        <button id="ai-toggle-btn" onclick="toggleAiChat()" style="width: 60px; height: 60px; border-radius: 50%; background: #ffffff; color: #000000; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.6); cursor: pointer; font-size: 1.6rem; display: flex; justify-content: center; align-items: center; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+            <i class="fas fa-robot"></i>
+        </button>
+    </div>
+
+    <style>
+        #ai-toggle-btn:hover { transform: scale(1.1) rotate(5deg); }
+        .ai-message-user { align-self: flex-end; background: #ffffff; color: #000000; padding: 12px 16px; border-radius: 14px; border-bottom-right-radius: 4px; max-width: 85%; font-size: 0.9rem; line-height: 1.4; font-weight: 500; }
+        .ai-message-bot { align-self: flex-start; background: rgba(255,255,255,0.08); color: #ffffff; padding: 12px 16px; border-radius: 14px; border-bottom-left-radius: 4px; max-width: 85%; font-size: 0.9rem; line-height: 1.4; }
+        .ai-message-bot strong { color: #aaaaaa; }
+        .ai-mic-active { background: rgba(255,77,77,0.2) !important; color: #ff4d4d !important; border-color: #ff4d4d !important; animation: pulse-mic 1.5s infinite; }
+        @keyframes pulse-mic { 0% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 77, 77, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); } }
+    </style>
+
+    <script>
+        const chatWindow = document.getElementById('ai-chat-window');
+        const chatMessages = document.getElementById('ai-chat-messages');
+        const chatInput = document.getElementById('ai-chat-input');
+        const micBtn = document.getElementById('ai-mic-btn');
+        let recognition = null;
+        let isRecording = false;
+
+        // Initialize Web Speech API for recognition if available
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'es-ES';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = function() {
+                isRecording = true;
+                micBtn.classList.add('ai-mic-active');
+            };
+
+            recognition.onresult = function(event) {
+                const speechResult = event.results[0][0].transcript;
+                chatInput.value = speechResult;
+                sendAiMessage();
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error', event.error);
+                stopVoiceRecognition();
+            };
+
+            recognition.onend = function() {
+                stopVoiceRecognition();
+            };
+        }
+
+        function toggleAiChat() {
+            if (chatWindow.style.display === 'none') {
+                chatWindow.style.display = 'flex';
+                chatInput.focus();
+            } else {
+                chatWindow.style.display = 'none';
+                stopVoiceRecognition();
+            }
+        }
+
+        function toggleVoiceRecognition() {
+            if (!recognition) {
+                alert("Tu navegador no soporta reconocimiento de voz.");
+                return;
+            }
+            if (isRecording) {
+                stopVoiceRecognition();
+            } else {
+                recognition.start();
+            }
+        }
+
+        function stopVoiceRecognition() {
+            if (recognition && isRecording) {
+                recognition.stop();
+            }
+            isRecording = false;
+            micBtn.classList.remove('ai-mic-active');
+        }
+
+        function appendMessage(text, isUser) {
+            const div = document.createElement('div');
+            div.className = isUser ? 'ai-message-user' : 'ai-message-bot';
+            div.textContent = text;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'es-ES';
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        async function sendAiMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            
+            // User message
+            appendMessage(text, true);
+            chatInput.value = '';
+
+            // Loading indicator could go here
+
+            try {
+                const response = await fetch('/api/ai-chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ message: text })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    appendMessage(data.reply, false);
+                    speakText(data.reply);
+                } else {
+                    appendMessage("Lo siento, tuve un error procesando eso.", false);
+                }
+            } catch (error) {
+                console.error("Error AI:", error);
+                appendMessage("Error de conexión con el asistente.", false);
+            }
+        }
+
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendAiMessage();
+            }
+        });
     </script>
 </body>
 </html>

@@ -1,0 +1,101 @@
+/* Register page premium styling */
+:root {
+    --primary-h: 190deg; /* cyan hue */
+    --primary-s: 80%;
+    --primary-l: 55%;
+    --bg-h: 210deg;
+    --bg-s: 15%;
+    --bg-l: 10%;
+    --glass-bg: rgba(20, 23, 30, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --neon: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
+}
+body {
+    background: hsl(var(--bg-h), var(--bg-s), var(--bg-l));
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.glass-card {
+    background: var(--glass-bg);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    max-width: 500px;
+    width: 100%;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+}
+.glass-card h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    color: var(--neon);
+}
+.form-label {
+    color: #cfd2d6;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.form-control {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--glass-border);
+    color: #fff;
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.3s ease;
+}
+.form-control:focus {
+    background: rgba(255,255,255,0.12);
+    border-color: var(--neon);
+    box-shadow: 0 0 0 2px hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.2);
+    outline: none;
+}
+.btn-neon {
+    background: linear-gradient(135deg, var(--neon), hsl(var(--primary-h), var(--primary-s), 45%));
+    color: #0c0a09;
+    font-weight: 700;
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-neon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,240,255,0.4);
+}
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: #4285F4;
+    color: #fff;
+    border-radius: 0.75rem;
+    padding: 0.6rem 1rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.btn-google:hover {background: #357ae8;}
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+    color: #888;
+}
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #444;
+    margin: 0 0.5rem;
+}

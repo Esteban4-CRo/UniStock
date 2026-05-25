@@ -19,6 +19,13 @@ Route::get('/', function () {
 
 Auth::routes();
 
+// AI Assistant Route
+Route::post('/api/ai-chat', [\App\Http\Controllers\AiAssistantController::class, 'chat']);
+
+// Google Socialite Routes
+Route::get('/auth/google', [\App\Http\Controllers\Auth\LoginController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\LoginController::class, 'handleGoogleCallback']);
+
 // Añadir el middleware 'check-active' a todas las rutas protegidas
 Route::middleware(['auth', 'prevent-back', 'check-active'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');

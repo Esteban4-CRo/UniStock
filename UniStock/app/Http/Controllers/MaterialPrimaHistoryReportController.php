@@ -16,7 +16,7 @@ class MaterialPrimaHistoryReportController extends Controller
     {
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
-            if (!auth()->user()->isSuperUsuario() && !auth()->user()->isGerente()) {
+            if (!auth()->user()->isSuperUsuario() && !auth()->user()->isGerente() && !auth()->user()->isAlmacenista()) {
                 abort(403, 'No tienes permiso para acceder a esta sección.');
             }
             return $next($request);

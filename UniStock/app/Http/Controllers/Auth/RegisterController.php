@@ -52,7 +52,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', 'string', 'in:super_usuario,gerente,almacenista,proveedor'],
+            'role' => ['required', 'string', 'in:almacenista,proveedor'],
         ];
 
         if (isset($data['role']) && ($data['role'] === 'gerente' || $data['role'] === 'super_usuario')) {
@@ -107,5 +107,14 @@ class RegisterController extends Controller
         }
 
         return $user;
+    }
+
+    protected function registered(\Illuminate\Http\Request $request, $user)
+    {
+        try {
+            \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\LoginAlertMail($user));
+        } catch (\Exception $e) {
+            \Log::error('No se pudo enviar el correo de bienvenida/alerta: ' . $e->getMessage());
+        }
     }
 }

@@ -1,32 +1,57 @@
 services:
   - type: web
-    name: unistock
-    env: docker
+    name: unistock-web
+    env: php
+    region: ohio
     plan: free
-    rootDir: .
-    preDeployCommand: php artisan migrate --seed --force
+    buildCommand: composer install --no-dev --optimize-autoloader && npm install && npm run build && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan migrate --force
+    startCommand: heroku-php-apache2 public/
     envVars:
+      - key: APP_NAME
+        value: UniStock
       - key: APP_ENV
         value: production
+      - key: APP_KEY
+        value: base64:R+xvL8iIY1fvMTmbQYOVWRkT63parRUWmLaLORA3b48=
       - key: APP_DEBUG
-        value: true
+        value: "false"
+      - key: APP_URL
+        value: https://unistock-web.onrender.com
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
         value: aws-1-us-east-2.pooler.supabase.com
       - key: DB_PORT
-        value: 5432
+        value: "6543"
       - key: DB_DATABASE
         value: postgres
       - key: DB_USERNAME
         value: postgres.bmxfjvkrsvwrmnareljm
       - key: DB_PASSWORD
         value: 94410404Unilever
-      - key: APP_KEY
-        value: "base64:8Ehyg5VjdHSoqWmQG5o8gh8ucY9swIVvSi1aCZAWspw="
-      - key: APP_URL
-        value: https://unistock.onrender.com
-      - key: SESSION_DRIVER
-        value: cookie
-      - key: CACHE_DRIVER
-        value: file
+      - key: MAIL_MAILER
+        value: smtp
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USERNAME
+        value: juancampinoc@gmail.com
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_ENCRYPTION
+        value: tls
+      - key: MAIL_FROM_ADDRESS
+        value: juancampinoc@gmail.com
+      - key: MAIL_FROM_NAME
+        value: "Juan Campino - CEO UniStock"
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.1-8b-instant
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        value: https://unistock-web.onrender.com/auth/google/callback

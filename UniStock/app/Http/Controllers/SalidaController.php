@@ -63,6 +63,24 @@ class SalidaController extends Controller
 
             // Decrementar stock actual
             $material->actualizarStock(-$request->cantidad);
+
+            // Verificar si el nuevo stock está en o por debajo del mínimo
+            $nuevoStock = $material->fresh()->cantidad;
+            if ($nuevoStock <= $material->stock_minimo) {
+                try {
+                    $alerts = [
+                        [
+                            'nombre' => $material->nombre,
+                            'codigo' => $material->codigo,
+                            'cantidad' => $nuevoStock,
+                            'stock_minimo' => $material->stock_minimo
+                        ]
+                    ];
+                    \Illuminate\Support\Facades\Mail::to(Auth::user()->email)->send(new \App\Mail\StockAlertMail($alerts));
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('No se pudo enviar correo de alerta: ' . $e->getMessage());
+                }
+            }
         }
 
         return redirect()->route('salidas.index')

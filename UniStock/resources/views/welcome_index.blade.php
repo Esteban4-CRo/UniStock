@@ -1,87 +1,112 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div id="welcomeCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="d-flex align-items-center justify-content-center" style="height:60vh; background:#fff;">
-                            <div class="text-center">
-                                <h1 style="font-weight:800; font-size:2.4rem;">UniStock</h1>
-                                <p style="font-size:1.1rem; color:#555; max-width:700px; margin:0 auto;">Gestión simple de
-                                    inventarios — registrese o inicie sesión para continuar.</p>
-                                <div class="mt-4">
-                                    @guest
-                                        <a href="{{ route('register') }}" class="btn btn-primary me-2"><i
-                                                class="fas fa-user-plus"></i> Registrarse</a>
-                                        <a href="{{ route('login') }}" class="btn btn-secondary"><i
-                                                class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
-                                    @else
-                                        <a href="{{ route('home') }}" class="btn btn-primary me-2"><i
-                                                class="fas fa-tachometer-alt"></i> Mi Panel (Dashboard)</a>
-                                        <a href="{{ route('logout') }}" class="btn btn-outline-danger"
-                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                                        </a>
-                                    @endguest
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="carousel-item">
-                        <div class="d-flex align-items-center justify-content-center"
-                            style="height:60vh; background:#f8f8f8;">
-                            <div class="text-center">
-                                <h2 style="font-weight:700;">Funcionalidades</h2>
-                                <p style="color:#555; max-width:700px; margin:0 auto;">Cree productos con códigos únicos,
-                                    gestione entradas y salidas, y controle el inventario desde un panel sencillo y
-                                    monocromo.</p>
-                                <div class="mt-4">
-                                    <a href="{{ route('register') }}" class="btn btn-primary me-2">Comenzar</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div class="container py-5 mt-4">
+        <!-- Hero Section -->
+        <div class="row align-items-center mb-5 pb-4">
+            <div class="col-lg-7 text-center text-lg-start mb-4 mb-lg-0">
+                <h1 class="display-4 fw-bold mb-3 animate-soft-blur" style="color: var(--primary); letter-spacing: -1px;">
+                    Gestión Inteligente
+                    de Inventarios
+                </h1>
+                <p class="lead mb-4" style="color: var(--text); opacity: 0.85; max-width: 600px;">
+                    UniStock centraliza el control de tus materias primas, proveedores y movimientos con una interfaz
+                    rápida, segura y un asistente de Inteligencia Artificial integrado.
+                </p>
+                <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-lg-start gap-3 mt-4">
+                    @guest
+                        <a href="{{ route('register') }}" class="btn btn-primary btn-lg px-4 py-3 animate-spring-scale"
+                            style="border-radius: 12px; font-weight: 600;">
+                            <i class="fas fa-rocket me-2"></i> Comenzar Ahora
+                        </a>
+                        <a href="{{ route('login') }}" class="btn btn-outline-secondary btn-lg px-4 py-3 animate-spring-scale"
+                            style="border-radius: 12px; font-weight: 600; animation-delay: 100ms;">
+                            <i class="fas fa-sign-in-alt me-2"></i> Iniciar Sesión
+                        </a>
+                    @else
+                        <a href="{{ route('home') }}" class="btn btn-primary btn-lg px-4 py-3 animate-spring-scale"
+                            style="border-radius: 12px; font-weight: 600;">
+                            <i class="fas fa-tachometer-alt me-2"></i> Ir a mi Panel
+                        </a>
+                    @endguest
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#welcomeCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Anterior</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#welcomeCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Siguiente</span>
-                </button>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <!-- Espacio para ilustración si es necesario, o mantener limpio ya que el carrusel está arriba -->
+                <div class="glass p-4 rounded-4 text-center d-flex flex-column justify-content-center"
+                    style="min-height: 250px; border: 1px solid var(--border);">
+                    <i class="fas fa-shield-alt mb-3" style="font-size: 3rem; color: var(--primary);"></i>
+                    <h4 class="fw-bold">Sistema Seguro</h4>
+                    <p class="small mb-0" style="opacity: 0.8;">Tus datos están protegidos en la nube con altos estándares
+                        de seguridad y respaldos automáticos.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Beneficios Grid -->
+        <div class="row g-4 mt-2">
+            <div class="col-md-4">
+                <div class="card-base glass h-100 p-4 transition-card text-center text-md-start"
+                    style="border-radius: 16px;">
+                    <div class="mb-3">
+                        <div class="d-inline-flex align-items-center justify-content-center"
+                            style="width: 50px; height: 50px; border-radius: 12px; background: var(--bot-bg); color: var(--primary);">
+                            <i class="fas fa-box-open fs-4"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold mb-2">Control de Productos</h5>
+                    <p class="small mb-0" style="opacity: 0.8; line-height: 1.6;">
+                        Administre sus materias primas con códigos únicos e inmutables, controle existencias mínimas y
+                        clasifique por ubicación.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card-base glass h-100 p-4 transition-card text-center text-md-start"
+                    style="border-radius: 16px;">
+                    <div class="mb-3">
+                        <div class="d-inline-flex align-items-center justify-content-center"
+                            style="width: 50px; height: 50px; border-radius: 12px; background: var(--bot-bg); color: var(--primary);">
+                            <i class="fas fa-exchange-alt fs-4"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold mb-2">Movimientos Precisos</h5>
+                    <p class="small mb-0" style="opacity: 0.8; line-height: 1.6;">
+                        Registre entradas y salidas con trazabilidad total. Conozca al detalle qué proveedor suministró el
+                        material y hacia dónde fue despachado.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card-base glass h-100 p-4 transition-card text-center text-md-start"
+                    style="border-radius: 16px;">
+                    <div class="mb-3">
+                        <div class="d-inline-flex align-items-center justify-content-center"
+                            style="width: 50px; height: 50px; border-radius: 12px; background: var(--bot-bg); color: var(--primary);">
+                            <i class="fas fa-robot fs-4"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold mb-2">Asistente IA</h5>
+                    <p class="small mb-0" style="opacity: 0.8; line-height: 1.6;">
+                        Tome decisiones informadas con la ayuda de nuestro chatbot inteligente que analiza el estado de su
+                        almacén en tiempo real.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="row mt-5">
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Productos</h5>
-                    <p class="card-text">Administre productos con códigos únicos e inmutables.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Entradas / Salidas</h5>
-                    <p class="card-text">Registre movimientos y lleve control del stock.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Usuarios</h5>
-                    <p class="card-text">Gestione usuarios y perfiles con foto.</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <style>
+        .transition-card {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        }
 
+        .transition-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+            border-color: var(--primary) !important;
+        }
+    </style>
 @endsection

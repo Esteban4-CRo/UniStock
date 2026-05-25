@@ -9,7 +9,7 @@ return [
     |
     | This file is for storing the credentials for third party services such
     | as Mailgun, Postmark, AWS and more. This file provides the de facto
-    | location for this type of information, allowing packages to have
+    | location for this information, allowing packages to have
     | a conventional file to locate the various service credentials.
     |
     */
@@ -20,6 +20,13 @@ return [
 
     'resend' => [
         'key' => env('RESEND_API_KEY'),
+    ],
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        // Ensure redirect URL matches the one registered in Google Console
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
     'ses' => [
