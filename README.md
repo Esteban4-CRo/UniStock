@@ -8,32 +8,6 @@
 
 **UniStock** 
 
-### 🔧 Módulos Principales
-- **Gestión de Productos**: CRUD completo de productos 
-- **Control de Categorías**: Organización jerárquica de productos
-- **Administración de Proveedores**: Registro y seguimiento de proveedores
-- **Movimientos de Inventario**: Entradas, salidas y ajustes de stock
-- **Sistema de Usuarios**: Roles y permisos de acceso
-
-### 📊 Funcionalidades Avanzadas
-- **Alertas de Stock**: Notificaciones de productos con bajo inventario
-- **Reportes y Estadísticas**: Dashboard con métricas clave
-- **Búsqueda Avanzada**: Filtros múltiples y búsqueda en tiempo real
-- **Backup de Datos**: Exportación e importación de información
-- **Interfaz Responsive**: Compatible con dispositivos móviles
-
-## 🚀 Tecnologías Utilizadas
-
-### Backend
-- **Laravel 10+** - Framework PHP
-- **MySQL** - Base de datos
-- **Eloquent ORM** - Mapeo objeto-relacional
-- **Authentication** - Sistema de autenticación integrado
-
-### Herramientas de Desarrollo
-- **Composer** - Gestión de dependencias
-- **Artisan** - CLI de Laravel
-- **Blade** - Motor de plantillas
 
 ## Instalación
 
