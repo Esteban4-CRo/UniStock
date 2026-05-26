@@ -10,7 +10,7 @@
                     <h1 class="display-4 fw-bold mb-3 animate-soft-blur" style="color: var(--primary); letter-spacing: -1px; margin:0;">
                         Gestión Inteligente de Inventarios
                     </h1>
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo" style="height: 60px; margin-left: 15px;">
+                    <img src="{{ asset('images/1.gif') }}" alt="Logo" style="height: 60px; margin-left: 15px;">
                 </div>
                 <p class="lead mb-4" style="color: var(--text); opacity: 0.85; max-width: 600px;">
                     UniStock centraliza el control de tus materias primas, proveedores y movimientos con una interfaz

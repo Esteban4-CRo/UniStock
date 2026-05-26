@@ -350,7 +350,7 @@
     <nav class="navbar navbar-expand-lg sticky-top glass" style="z-index: 1040; border-bottom: 1px solid var(--border);">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('home') }}">
-                <img src="{{ asset('images/logo.png') }}" alt="UniStock Logo" onerror="this.onerror=null; this.src=''; this.alt='[Logo]'" style="max-height: 80px; filter: var(--logo-filter);">
+                <img src="{{ asset('images/1.gif') }}" alt="UniStock Logo" onerror="this.onerror=null; this.src=''; this.alt='[Logo]'" style="max-height: 80px; filter: var(--logo-filter);">
             </a>
             <button id="themeToggle" class="btn btn-link text-white ms-3" style="font-size:1.2rem;" title="Toggle Dark/Light Theme"><i class="fas fa-moon"></i></button>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

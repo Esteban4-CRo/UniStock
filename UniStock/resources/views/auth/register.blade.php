@@ -149,7 +149,7 @@
                     
                     <!-- Logo Aquí -->
                     <div class="logo-container">
-                        <img src="{{ asset('images/logo.png') }}" alt="UniStock Logo" onerror="this.onerror=null; this.src=''; this.alt='[ IMAGEN DEL LOGO AQUÍ ]'; this.style.color='white';">
+                        <img src="{{ asset('images/1.gif') }}" alt="UniStock Logo" onerror="this.onerror=null; this.src=''; this.alt='[ IMAGEN DEL LOGO AQUÍ ]'; this.style.color='white';">
                     </div>
 
                     <div class="text-center mb-5">

@@ -102,7 +102,7 @@ class LoginController extends Controller
                 \Log::error('No se pudo enviar el correo de alerta: ' . $e->getMessage());
             }
 
-            return redirect($this->redirectTo);
+            return redirect()->route('home');
 
         } catch (\Exception $e) {
             \Log::error('Error en Google Login: ' . $e->getMessage());
