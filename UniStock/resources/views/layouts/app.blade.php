@@ -520,45 +520,6 @@
     </nav>
 
     <main>
-        <!-- Hero / Slider Section -->
-        @if (Route::is('home') || Route::is('welcome'))
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/10.0.4/swiper-bundle.min.css" />
-        <div class="slider-wrapper w-100 m-0 p-0" style="max-width: 100%;">
-            <div class="swiper mySwiper" style="width:100%; height:400px; background: transparent;">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide" style="border: none; box-shadow: none;"><img src="{{ asset('images/1.gif') }}" class="d-block w-100 h-100 object-fit-cover" alt="Slide 1"></div>
-                    <div class="swiper-slide" style="border: none; box-shadow: none;"><img src="{{ asset('images/2.gif') }}" class="d-block w-100 h-100 object-fit-cover" alt="Slide 2"></div>
-                    <div class="swiper-slide" style="border: none; box-shadow: none;"><img src="{{ asset('images/3.gif') }}" class="d-block w-100 h-100 object-fit-cover" alt="Slide 3"></div>
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
-        </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/10.0.4/swiper-bundle.min.js"></script>
-        <script>
-            const swiper = new Swiper('.mySwiper', {
-                effect: 'coverflow',
-                grabCursor: true,
-                centeredSlides: true,
-                slidesPerView: 'auto',
-                coverflowEffect: {
-                    rotate: 30,
-                    stretch: 0,
-                    depth: 150,
-                    modifier: 1,
-                    slideShadows: true,
-                },
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-                loop: true,
-                autoplay: {
-                    delay: 4000,
-                    disableOnInteraction: false,
-                },
-            });
-        </script>
-        @endif
         
         <div class="container mt-4">
 
