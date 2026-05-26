@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container py-5 mt-4">
+    <x-slider />
+<div class="container py-5 mt-4">
         <!-- Hero Section -->
         <div class="row align-items-center mb-5 pb-4">
             <div class="col-lg-7 text-center text-lg-start mb-4 mb-lg-0">
