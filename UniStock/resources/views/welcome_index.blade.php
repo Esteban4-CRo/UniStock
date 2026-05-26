@@ -1,15 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-slider />
+
 <div class="container py-5 mt-4">
         <!-- Hero Section -->
         <div class="row align-items-center mb-5 pb-4">
             <div class="col-lg-7 text-center text-lg-start mb-4 mb-lg-0">
-                <h1 class="display-4 fw-bold mb-3 animate-soft-blur" style="color: var(--primary); letter-spacing: -1px;">
-                    Gestión Inteligente
-                    de Inventarios
-                </h1>
+                <div class="d-flex align-items-center">
+                    <h1 class="display-4 fw-bold mb-3 animate-soft-blur" style="color: var(--primary); letter-spacing: -1px; margin:0;">
+                        Gestión Inteligente de Inventarios
+                    </h1>
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo" style="height: 60px; margin-left: 15px;">
+                </div>
                 <p class="lead mb-4" style="color: var(--text); opacity: 0.85; max-width: 600px;">
                     UniStock centraliza el control de tus materias primas, proveedores y movimientos con una interfaz
                     rápida, segura y un asistente de Inteligencia Artificial integrado.
