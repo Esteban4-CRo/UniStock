@@ -68,4 +68,20 @@ class ProveedorController extends Controller
         $proveedor->update(['activo' => false]);
         return redirect()->route('proveedores.index')->with('success', 'Proveedor inhabilitado exitosamente.');
     }
+
+    public function validar(Request $request, Proveedor $proveedor)
+    {
+        if (!auth()->user()->isSuperUsuario() && !auth()->user()->isGerente()) {
+            abort(403, 'No tienes permiso para validar proveedores.');
+        }
+
+        $request->validate([
+            'estado_validacion' => 'required|in:validado,rechazado,pendiente'
+        ]);
+
+        $proveedor->estado_validacion = $request->estado_validacion;
+        $proveedor->save();
+
+        return back()->with('success', 'Estado de validación del proveedor actualizado.');
+    }
 }

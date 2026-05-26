@@ -27,7 +27,8 @@
                         <th class="py-3">RUC / Identificación</th>
                         <th class="py-3">Teléfono</th>
                         <th class="py-3">Dirección y Ciudad</th>
-                        <th class="py-3">Ubicación GPS</th>
+                        <th class="py-3">Estado</th>
+                        <th class="py-3 text-center">Ubicación GPS</th>
                         <th class="py-3 text-end pe-4" style="width: 200px;">Acciones</th>
                     </tr>
                 </thead>
@@ -56,12 +57,21 @@
                                 <small class="text-muted">{{ $proveedor->ciudad }}, {{ $proveedor->pais }}</small>
                             </td>
                             <td class="py-3">
+                                @if($proveedor->estado_validacion === 'validado')
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success"><i class="fas fa-check-circle me-1"></i> Validado</span>
+                                @elseif($proveedor->estado_validacion === 'rechazado')
+                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger"><i class="fas fa-times-circle me-1"></i> Rechazado</span>
+                                @else
+                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning"><i class="fas fa-clock me-1"></i> Pendiente</span>
+                                @endif
+                            </td>
+                            <td class="py-3 text-center">
                                 @if($proveedor->hasLocation())
                                     <a href="{{ $proveedor->google_maps_url }}" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2 border-0">
-                                        <i class="fas fa-map-marked-alt text-dark me-1"></i> Ver Mapa
+                                        <i class="fas fa-map-marked-alt text-dark me-1"></i> Mapa
                                     </a>
                                 @else
-                                    <span class="text-muted small">No registrada</span>
+                                    <span class="text-muted small"><i class="fas fa-map-marker-slash"></i> N/A</span>
                                 @endif
                             </td>
                             <td class="py-3 text-end pe-4">
@@ -69,6 +79,27 @@
                                     <i class="fas fa-eye text-dark"></i>
                                 </a>
                                 @if(Auth::user()->isSuperUsuario() || Auth::user()->isGerente())
+                                    @if($proveedor->estado_validacion !== 'validado')
+                                        <form action="{{ route('proveedores.validar', $proveedor->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="estado_validacion" value="validado">
+                                            <button type="submit" class="btn btn-sm btn-success bg-opacity-10 text-success border-0 me-1" title="Validar Proveedor" onclick="return confirm('¿Marcar proveedor como VALIDADO?');">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                    @if($proveedor->estado_validacion !== 'rechazado')
+                                        <form action="{{ route('proveedores.validar', $proveedor->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="estado_validacion" value="rechazado">
+                                            <button type="submit" class="btn btn-sm btn-danger bg-opacity-10 text-danger border-0 me-1" title="Rechazar Proveedor" onclick="return confirm('¿Marcar proveedor como RECHAZADO?');">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+
                                 <a href="{{ route('proveedores.edit', $proveedor->id) }}" class="btn btn-sm btn-light border-0 me-1" title="Editar">
                                     <i class="fas fa-edit text-dark"></i>
                                 </a>

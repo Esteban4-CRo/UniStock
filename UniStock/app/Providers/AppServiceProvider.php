@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\MaterialPrima;
+use App\Observers\MateriaPrimaObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,5 +24,7 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production') {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
+
+        MaterialPrima::observe(MateriaPrimaObserver::class);
     }
 }

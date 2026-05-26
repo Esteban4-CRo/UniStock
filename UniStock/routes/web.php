@@ -12,6 +12,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\MaterialPrimaHistoryReportController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\AlertaController;
 
 Route::get('/', function () {
     return view('welcome_index');
@@ -44,6 +45,7 @@ Route::middleware(['auth', 'prevent-back', 'check-active'])->group(function () {
     Route::resource('proveedores', ProveedorController::class)->parameters([
         'proveedores' => 'proveedor'
     ]);
+    Route::put('/proveedores/{proveedor}/validar', [ProveedorController::class, 'validar'])->name('proveedores.validar');
 
     // Rutas para ubicaciones físicas de almacén
     Route::resource('ubicaciones', UbicacionController::class)->parameters([
@@ -99,4 +101,8 @@ Route::middleware(['auth', 'prevent-back', 'check-active'])->group(function () {
         ->name('excel.movimientos');
     Route::get('/excel/movimientos/preview', [\App\Http\Controllers\ExcelExportController::class, 'previewMovimientos'])
         ->name('excel.movimientos.preview');
+
+    // Alertas
+    Route::post('/alertas/marcar-todas', [AlertaController::class, 'marcarTodasLeidas'])->name('alertas.marcarTodas');
+    Route::post('/alertas/{id}/marcar', [AlertaController::class, 'marcarLeida'])->name('alertas.marcar');
 });

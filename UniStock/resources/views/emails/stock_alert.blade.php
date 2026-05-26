@@ -70,7 +70,7 @@
             <div class="ceo-signature">
                 <p>Atentamente,</p>
                 <p><img src="https://upload.wikimedia.org/wikipedia/commons/d/d4/Firma_de_Juan_Guaid%C3%B3.svg" style="height: 40px; margin-bottom: 5px; opacity: 0.8;" alt="Firma"></p>
-                <p><strong>Juan Campino</strong><br>
+                <p><strong>EstebanCRO el PrettyBoy</strong><br>
                 <span style="color: #666; font-size: 0.9em;">CEO & Founder, UniStock Inc.</span></p>
                 <p style="font-size: 0.85em; color: #888; margin-top: 15px;">Fecha del reporte: {{ now()->format('d M Y, H:i') }}</p>
             </div>

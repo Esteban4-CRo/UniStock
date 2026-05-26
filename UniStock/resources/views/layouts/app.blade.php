@@ -1,73 +1,36 @@
 @php
     $alertasNotif = [];
     if (Auth::check()) {
-        // 1. Sin Stock
-        $sinStock = \App\Models\MaterialPrima::where('activo', true)->where('cantidad', 0)->get();
-        foreach ($sinStock as $item) {
-            $alertasNotif[] = [
-                'tipo' => 'sin_stock',
-                'nivel' => 'danger',
-                'icono' => 'fas fa-exclamation-triangle',
-                'titulo' => '¡Sin Stock!',
-                'mensaje' => "El insumo {$item->nombre} ({$item->codigo}) se ha quedado sin stock.",
-                'ruta' => route('materias-primas.show', $item->id),
-                'tiempo' => 'Ahora mismo'
-            ];
-        }
-
-        // 2. Stock Bajo
-        $stockBajo = \App\Models\MaterialPrima::where('activo', true)
-            ->where('cantidad', '>', 0)
-            ->whereColumn('cantidad', '<=', 'stock_minimo')
+        $alertasDB = \App\Models\Alerta::where('user_id', Auth::id())
+            ->where('estado', 'activa')
+            ->orderBy('created_at', 'desc')
             ->get();
-        foreach ($stockBajo as $item) {
-            $alertasNotif[] = [
-                'tipo' => 'stock_bajo',
-                'nivel' => 'warning',
-                'icono' => 'fas fa-exclamation-circle',
-                'titulo' => 'Stock Bajo',
-                'mensaje' => "{$item->nombre} ({$item->codigo}) está por debajo del stock mínimo ({$item->cantidad} {$item->unidad_medida} restante).",
-                'ruta' => route('materias-primas.show', $item->id),
-                'tiempo' => 'Atención requerida'
-            ];
-        }
-
-        // 3. Próximos a vencer (menos de 30 días)
-        $expiring = \App\Models\MaterialPrima::where('activo', true)
-            ->whereNotNull('fecha_caducidad')
-            ->where('fecha_caducidad', '<=', now()->addDays(30))
-            ->where('fecha_caducidad', '>=', now())
-            ->get();
-        foreach ($expiring as $item) {
-            $dias = now()->diffInDays($item->fecha_caducidad);
-            $alertasNotif[] = [
-                'tipo' => 'por_vencer',
-                'nivel' => 'info',
-                'icono' => 'fas fa-hourglass-half',
-                'titulo' => 'Próximo a Vencer',
-                'mensaje' => "Lote de {$item->nombre} ({$item->codigo}) vence en {$dias} días.",
-                'ruta' => route('materias-primas.show', $item->id),
-                'tiempo' => 'Urgencia media'
-            ];
-        }
-
-        // 4. Últimas entradas registradas en las últimas 12 horas
-        $recentEntradas = \App\Models\Entrada::with('materialPrima')
-            ->where('anulado', false)
-            ->where('created_at', '>=', now()->subHours(12))
-            ->get();
-        foreach ($recentEntradas as $e) {
-            if ($e->materialPrima) {
-                $alertasNotif[] = [
-                    'tipo' => 'nueva_entrada',
-                    'nivel' => 'success',
-                    'icono' => 'fas fa-arrow-down',
-                    'titulo' => 'Nueva Entrada',
-                    'mensaje' => "Se ingresaron +{$e->cantidad} {$e->materialPrima->unidad_medida} de {$e->materialPrima->nombre}.",
-                    'ruta' => route('entradas.index'),
-                    'tiempo' => $e->created_at->diffForHumans()
-                ];
+        
+        foreach ($alertasDB as $alerta) {
+            $icono = 'fas fa-bell';
+            $nivel = 'info';
+            $titulo = 'Notificación';
+            
+            if ($alerta->tipo === 'stock_bajo') {
+                $icono = 'fas fa-exclamation-triangle';
+                $nivel = 'danger';
+                $titulo = 'Alerta de Stock';
+            } elseif ($alerta->tipo === 'vencimiento') {
+                $icono = 'fas fa-hourglass-half';
+                $nivel = 'warning';
+                $titulo = 'Vencimiento';
             }
+            
+            $alertasNotif[] = [
+                'id' => $alerta->id,
+                'tipo' => $alerta->tipo,
+                'nivel' => $nivel,
+                'icono' => $icono,
+                'titulo' => $titulo,
+                'mensaje' => $alerta->mensaje,
+                'ruta' => '#', 
+                'tiempo' => $alerta->created_at->diffForHumans()
+            ];
         }
     }
 @endphp
@@ -464,7 +427,12 @@
                             <ul class="dropdown-menu dropdown-menu-end shadow border py-0" aria-labelledby="notificationDropdown" style="width: 320px; max-height: 400px; overflow-y: auto; border-radius: 12px; font-size: 0.85rem; background: #ffffff !important; border-color: #e5e7eb !important;">
                                 <li class="dropdown-header bg-light py-2 text-dark border-bottom d-flex justify-content-between align-items-center" style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
                                     <span class="fw-bold"><i class="fas fa-bell me-1"></i> Notificaciones</span>
-                                    <span class="badge bg-secondary text-white">{{ count($alertasNotif) }} nuevas</span>
+                                    <div>
+                                        <span class="badge bg-secondary text-white me-1">{{ count($alertasNotif) }} nuevas</span>
+                                        @if(count($alertasNotif) > 0)
+                                            <button onclick="marcarTodasLeidas()" class="btn btn-sm btn-link text-decoration-none p-0 shadow-none"><i class="fas fa-check-double" title="Marcar todas como leídas"></i></button>
+                                        @endif
+                                    </div>
                                 </li>
                                 @if(count($alertasNotif) == 0)
                                     <li class="py-4 text-center text-muted" style="background: #ffffff !important;">
@@ -488,21 +456,24 @@
                                         }
                                     </style>
                                     @foreach($alertasNotif as $a)
-                                        <li style="background: #ffffff !important;">
-                                            <a class="dropdown-item d-flex gap-3 py-2 text-wrap notification-item" href="{{ $a['ruta'] }}">
+                                        <li style="background: #ffffff !important;" id="alerta-{{ $a['id'] }}">
+                                            <div class="dropdown-item d-flex gap-3 py-2 text-wrap notification-item">
                                                 <div class="d-flex align-items-center justify-content-center text-{{ $a['nivel'] }}" style="width:30px; height:30px; border-radius:50%; background: #f3f4f6; flex-shrink: 0;">
                                                     <i class="{{ $a['icono'] }}"></i>
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     <div class="fw-bold text-dark small d-flex justify-content-between align-items-center" style="color: #1f2937 !important;">
                                                         {{ $a['titulo'] }}
-                                                        <span class="text-muted-custom fw-normal" style="font-size:0.7rem;">{{ $a['tiempo'] }}</span>
+                                                        <div>
+                                                            <span class="text-muted-custom fw-normal" style="font-size:0.7rem;">{{ $a['tiempo'] }}</span>
+                                                            <button onclick="marcarLeida({{ $a['id'] }})" class="btn btn-sm btn-link text-muted p-0 ms-1 shadow-none"><i class="fas fa-times" title="Descartar"></i></button>
+                                                        </div>
                                                     </div>
                                                     <div class="text-muted-custom small mt-1" style="font-size:0.78rem; line-height:1.2;">
                                                         {{ $a['mensaje'] }}
                                                     </div>
                                                 </div>
-                                            </a>
+                                            </div>
                                         </li>
                                     @endforeach
                                 @endif
@@ -794,6 +765,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+function marcarLeida(id) {
+    fetch(`/alertas/${id}/marcar`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            document.getElementById('alerta-' + id).style.display = 'none';
+        }
+    });
+}
+
+function marcarTodasLeidas() {
+    fetch(`/alertas/marcar-todas`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            location.reload();
+        }
+    });
+}
 </script>
     <!-- AI Assistant Widget -->
     <div id="ai-assistant-widget" style="position: fixed; bottom: 30px; right: 30px; z-index: 9999;">
