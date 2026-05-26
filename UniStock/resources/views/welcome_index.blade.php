@@ -2,16 +2,13 @@
 
 @section('content')
 
-<div class="container py-5 mt-4">
+    <div class="container py-5 mt-4">
         <!-- Hero Section -->
-        <div class="row align-items-center mb-5 pb-4">
-            <div class="col-lg-7 text-center text-lg-start mb-4 mb-lg-0">
-                <div class="d-flex align-items-center">
-                    <h1 class="display-4 fw-bold mb-3 animate-soft-blur" style="color: var(--primary); letter-spacing: -1px; margin:0;">
-                        Gestión Inteligente de Inventarios
-                    </h1>
-                    <img src="{{ asset('images/1.gif') }}" alt="Logo" style="height: 60px; margin-left: 15px;">
-                </div>
+        <div class="row align-items-center mb-5 pb-4" style="min-height: 450px;">
+            <div class="col-lg-5 text-center text-lg-start mb-4 mb-lg-0">
+                <h1 class="display-4 fw-bold mb-0 animate-soft-blur" style="color: var(--primary); letter-spacing: -1px;">
+                    UniStock
+                </h1>
                 <p class="lead mb-4" style="color: var(--text); opacity: 0.85; max-width: 600px;">
                     UniStock centraliza el control de tus materias primas, proveedores y movimientos con una interfaz
                     rápida, segura y un asistente de Inteligencia Artificial integrado.
@@ -34,7 +31,10 @@
                     @endguest
                 </div>
             </div>
-            
+            <div class="col-lg-7 text-center">
+                <img src="{{ asset('images/1.gif') }}" alt="Gif grande"
+                    style="width:55%; height:100%; max-height:500px; object-fit:contain; border-radius:50%;">
+            </div>
         </div>
 
         <!-- Beneficios Grid -->

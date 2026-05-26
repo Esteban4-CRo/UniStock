@@ -57,19 +57,26 @@ class LoginController extends Controller
 
     public function redirectToGoogle()
     {
-        // Initiate Google OAuth flow with explicit redirect URL for Render environment
+        // Determine redirect URL based on environment (local vs production)
+        $host = request()->getHost();
+        $isLocal = ($host === '127.0.0.1' || $host === 'localhost');
+        $redirectUrl = $isLocal ? url('/auth/google/callback') : config('services.google.redirect');
         return Socialite::driver('google')
             ->stateless()
-            ->redirectUrl(config('services.google.redirect'))
+            ->redirectUrl($redirectUrl)
             ->redirect();
     }
 
     public function handleGoogleCallback()
     {
         try {
+            $host = request()->getHost();
+            $isLocal = ($host === '127.0.0.1' || $host === 'localhost');
+            $redirectUrl = $isLocal ? url('/auth/google/callback') : config('services.google.redirect');
+
             $googleUser = Socialite::driver('google')
                 ->stateless()
-                ->redirectUrl(config('services.google.redirect'))
+                ->redirectUrl($redirectUrl)
                 ->user();
             
             // Check if email already exists to prevent duplicates
