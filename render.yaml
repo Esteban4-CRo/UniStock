@@ -25,7 +25,7 @@ services:
       - key: APP_KEY
         value: "base64:8Ehyg5VjdHSoqWmQG5o8gh8ucY9swIVvSi1aCZAWspw="
       - key: APP_URL
-        value: https://unistock-d0q8.onrender.com
+        value: https://unistock-65b5.onrender.com
       - key: SESSION_DRIVER
         value: cookie
       - key: CACHE_DRIVER
