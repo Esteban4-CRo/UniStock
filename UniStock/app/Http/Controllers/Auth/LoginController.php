@@ -56,12 +56,12 @@ class LoginController extends Controller
     }
 
     public function redirectToGoogle()
-    {
-        return Socialite::driver('google')
-            ->stateless()
-            ->redirectUrl(config('services.google.redirect'))
-            ->redirect();
-    }
+{
+    // Initiate Google OAuth flow using configured redirect URI
+    return Socialite::driver('google')
+        ->stateless()
+        ->redirect();
+}
 
     public function handleGoogleCallback()
     {
