@@ -12,17 +12,17 @@ services:
       - key: APP_ENV
         value: production
       - key: APP_KEY
-        value: base64:R+xvL8iIY1fvMTmbQYOVWRkT63parRUWmLaLORA3b48=
+        value: base64:8Ehyg5VjdHSoqWmQG5o8gh8ucY9swIVvSi1aCZAWspw=
       - key: APP_DEBUG
         value: "false"
       - key: APP_URL
-        value: https://unistock-web.onrender.com
+        value: https://srv-d6qvl994tr6s7380vvng.onrender.com
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
         value: aws-1-us-east-2.pooler.supabase.com
       - key: DB_PORT
-        value: "6543"
+        value: "5432"
       - key: DB_DATABASE
         value: postgres
       - key: DB_USERNAME
@@ -38,20 +38,20 @@ services:
       - key: MAIL_USERNAME
         value: juancampinoc@gmail.com
       - key: MAIL_PASSWORD
-        sync: false
+        value: "wgsq btyx nbxh ltfm"
       - key: MAIL_ENCRYPTION
         value: tls
       - key: MAIL_FROM_ADDRESS
         value: juancampinoc@gmail.com
       - key: MAIL_FROM_NAME
         value: "Juan Campino - CEO UniStock"
-      - key: GROQ_API_KEY
-        sync: false
       - key: GROQ_MODEL
         value: llama-3.1-8b-instant
       - key: GOOGLE_CLIENT_ID
-        sync: false
+        value: YOUR_GOOGLE_CLIENT_ID
       - key: GOOGLE_CLIENT_SECRET
-        sync: false
+        value: YOUR_GOOGLE_CLIENT_SECRET
       - key: GOOGLE_REDIRECT_URI
-        value: https://unistock-web.onrender.com/auth/google/callback
+        value: https://srv-d6qvl994tr6s7380vvng.onrender.com/auth/google/callback
+      - key: GROQ_API_KEY
+        value: YOUR_GROQ_API_KEY

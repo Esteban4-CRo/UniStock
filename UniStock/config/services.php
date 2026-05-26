@@ -14,7 +14,7 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         // Ensure redirect URL matches the one registered in Google Console
-        'redirect' => env('GOOGLE_REDIRECT_URI'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', 'https://srv-d6qvl994tr6s7380vvng.onrender.com/auth/google/callback'),
     ],
 
     'ses' => [

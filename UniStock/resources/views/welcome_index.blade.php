@@ -31,30 +31,7 @@
                     @endguest
                 </div>
             </div>
-            <div class="col-lg-5 d-none d-lg-block">
-                <!-- Carousel Compacto -->
-                <div id="welcomeCarousel" class="carousel slide shadow-lg" data-bs-ride="carousel" style="max-width: 400px; margin: auto; border-radius: 16px; overflow: hidden; border: 1px solid var(--border);">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="{{ asset('images/1.gif') }}" class="d-block w-100" alt="App Preview 1" style="object-fit: cover; height: 100%;">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="{{ asset('images/2.gif') }}" class="d-block w-100" alt="App Preview 2" style="object-fit: cover; height: 100%;">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="{{ asset('images/3.gif') }}" class="d-block w-100" alt="App Preview 3" style="object-fit: cover; height: 100%;">
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#welcomeCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Anterior</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#welcomeCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Siguiente</span>
-                    </button>
-                </div>
-            </div>
+            
         </div>
 
         <!-- Beneficios Grid -->
