@@ -67,7 +67,10 @@ class LoginController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')
+                ->stateless()
+                ->redirectUrl(config('services.google.redirect'))
+                ->user();
             
             // Check if email already exists to prevent duplicates
             $user = User::where('email', $googleUser->email)->first();
