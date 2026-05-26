@@ -11,6 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
         $middleware->alias([
             'prevent-back' => \App\Http\Middleware\PreventBackHistory::class,
             'check-active' => \App\Http\Middleware\CheckUserActive::class,

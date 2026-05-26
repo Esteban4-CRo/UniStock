@@ -16,7 +16,7 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_URL
-        value: https://srv-d6qvl994tr6s7380vvng.onrender.com
+        value: https://unistock-d0q8.onrender.com
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
@@ -52,6 +52,6 @@ services:
       - key: GOOGLE_CLIENT_SECRET
         value: YOUR_GOOGLE_CLIENT_SECRET
       - key: GOOGLE_REDIRECT_URI
-        value: https://srv-d6qvl994tr6s7380vvng.onrender.com/auth/google/callback
+        value: https://unistock-d0q8.onrender.com/auth/google/callback
       - key: GROQ_API_KEY
         value: YOUR_GROQ_API_KEY
