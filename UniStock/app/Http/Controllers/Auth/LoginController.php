@@ -32,7 +32,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/materias-primas';
 
     /**
      * Create a new controller instance.
@@ -109,7 +109,7 @@ class LoginController extends Controller
                 \Log::error('No se pudo enviar el correo de alerta: ' . $e->getMessage());
             }
 
-            return redirect()->route('home');
+            return redirect()->intended('/');
 
         } catch (\Exception $e) {
             \Log::error('Error en Google Login: ' . $e->getMessage());
