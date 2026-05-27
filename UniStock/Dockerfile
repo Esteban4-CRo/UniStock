@@ -30,6 +30,7 @@ COPY . /var/www/html
 
 # Copy environment file (provide dummy values for build)
 COPY .env.example .env
+RUN echo "GOOGLE_CLIENT_ID=dev" >> .env && echo "GOOGLE_CLIENT_SECRET=dev" >> .env && echo "GOOGLE_REDIRECT_URI=https://example.com/auth/google/callback" >> .env
 # Install PHP dependencies without running post‑autoload scripts (they need env vars)
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 # Run Laravel Artisan commands now that .env exists
