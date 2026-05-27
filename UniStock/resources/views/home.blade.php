@@ -28,7 +28,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-2 px-2">
                     <i class="fas fa-cubes text-info opacity-75 fs-4"></i>
                     <span class="badge font-monospace"
-                        style="background: var(--primary); color: var(--bg); font-size: 0.7rem;">Activos</span>
+                        style="background: var(--primary); color: white; font-size: 0.7rem;">Activos</span>
                 </div>
                 <h3 class="fw-bold mb-1 mt-2 animate-spring-scale" style="font-size: 2.4rem;">{{ $totalMaterias }}</h3>
                 <span class="small opacity-75 uppercase fw-semibold text-truncate d-block animate-micro-scale"
@@ -40,7 +40,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-2 px-2">
                     <i class="fas fa-truck text-primary opacity-75 fs-4"></i>
                     <span class="badge border font-monospace"
-                        style="background: var(--bot-bg); color: var(--text); font-size: 0.7rem;">Socios</span>
+                        style="background: blue; color: white; font-size: 0.7rem;">Socios</span>
                 </div>
                 <h3 class="fw-bold mb-1 mt-2 animate-spring-scale" style="font-size: 2.4rem;">{{ $totalProveedores }}</h3>
                 <span class="small text-muted uppercase fw-semibold text-truncate d-block animate-micro-scale"
@@ -52,7 +52,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-2 px-2">
                     <i class="fas fa-map-marker-alt text-warning opacity-75 fs-4"></i>
                     <span class="badge border font-monospace"
-                        style="background: var(--bot-bg); color: var(--text); font-size: 0.7rem;">Zonas</span>
+                        style="background: yellow; color: black; font-size: 0.7rem;">Zonas</span>
                 </div>
                 <h3 class="fw-bold mb-1 mt-2 animate-spring-scale" style="font-size: 2.4rem;">{{ $totalUbicaciones }}</h3>
                 <span class="small text-muted uppercase fw-semibold text-truncate d-block animate-micro-scale"
@@ -64,8 +64,8 @@
                 style="transition: all 0.3s ease; border-left: 4px solid var(--bs-success) !important;">
                 <div class="d-flex justify-content-between align-items-center mb-2 px-2">
                     <i class="fas fa-arrow-alt-circle-down text-success fs-4"></i>
-                    <span class="badge bg-success bg-opacity-10 text-success font-monospace"
-                        style="font-size: 0.7rem;">Ingresos</span>
+                    <span class="badge border font-monospace"
+                        style="background: green; color: white; font-size: 0.7rem;">Ingresos</span>
                 </div>
                 <h3 class="fw-bold text-success mb-1 mt-2 animate-spring-scale" style="font-size: 2.4rem;">
                     +{{ $totalEntradas }}</h3>
@@ -78,8 +78,8 @@
                 style="transition: all 0.3s ease; border-left: 4px solid var(--bs-danger) !important;">
                 <div class="d-flex justify-content-between align-items-center mb-2 px-2">
                     <i class="fas fa-arrow-alt-circle-up text-danger fs-4"></i>
-                    <span class="badge bg-danger bg-opacity-10 text-danger font-monospace"
-                        style="font-size: 0.7rem;">Despachos</span>
+                    <span class="badge border font-monospace"
+                        style="background: red; color: white; font-size: 0.7rem;">Despachos</span>
                 </div>
                 <h3 class="fw-bold text-danger mb-1 mt-2 animate-spring-scale" style="font-size: 2.4rem;">
                     -{{ $totalSalidas }}</h3>

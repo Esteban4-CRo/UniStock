@@ -32,7 +32,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/materias-primas';
+    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -57,26 +57,18 @@ class LoginController extends Controller
 
     public function redirectToGoogle()
     {
-        // Determine redirect URL based on environment (local vs production)
-        $host = request()->getHost();
-        $isLocal = ($host === '127.0.0.1' || $host === 'localhost');
-        $redirectUrl = $isLocal ? url('/auth/google/callback') : config('services.google.redirect');
         return Socialite::driver('google')
             ->stateless()
-            ->redirectUrl($redirectUrl)
+            ->redirectUrl(config('services.google.redirect'))
             ->redirect();
     }
 
     public function handleGoogleCallback()
     {
         try {
-            $host = request()->getHost();
-            $isLocal = ($host === '127.0.0.1' || $host === 'localhost');
-            $redirectUrl = $isLocal ? url('/auth/google/callback') : config('services.google.redirect');
-
             $googleUser = Socialite::driver('google')
                 ->stateless()
-                ->redirectUrl($redirectUrl)
+                ->redirectUrl(config('services.google.redirect'))
                 ->user();
             
             // Check if email already exists to prevent duplicates
@@ -109,11 +101,11 @@ class LoginController extends Controller
                 \Log::error('No se pudo enviar el correo de alerta: ' . $e->getMessage());
             }
 
-            return redirect()->intended('/');
+            return redirect()->intended('/home');
 
         } catch (\Exception $e) {
             \Log::error('Error en Google Login: ' . $e->getMessage());
-            return redirect('/login')->with('error', 'Error al iniciar sesión con Google: Verifique sus credenciales (Client Secret).');
+            return redirect('/login')->with('error', 'Error al iniciar sesión con Google: ' . $e->getMessage());
         }
     }
 }

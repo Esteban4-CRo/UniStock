@@ -48,35 +48,20 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         :root {
-            --bg-main: #050505;
-            --text-main: #ffffff;
-            --text-muted: #888888;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --card-hover-border: rgba(255, 255, 255, 0.2);
-            --nav-bg: rgba(255, 255, 255, 0.03);
-            --hover-bg: rgba(255, 255, 255, 0.1);
-            --btn-primary-bg: #ffffff;
-            --btn-primary-text: #000000;
-            --logo-filter: brightness(0) invert(1);
-            --input-bg: rgba(255, 255, 255, 0.03);
-            --shadow-color: rgba(0, 0, 0, 0.8);
-        }
-
-        [data-theme="light"] {
-            --bg-main: #f4f6f8;
-            --text-main: #111111;
-            --text-muted: #666666;
+            --bg-main: #f0f4f8;
+            --text-main: #1a1a2e;
+            --text-muted: #64748b;
             --card-bg: #ffffff;
-            --card-border: rgba(0, 0, 0, 0.08);
-            --card-hover-border: rgba(0, 0, 0, 0.2);
-            --nav-bg: rgba(255, 255, 255, 0.9);
-            --hover-bg: rgba(0, 0, 0, 0.05);
-            --btn-primary-bg: #111111;
+            --card-border: #e2e8f0;
+            --card-hover-border: #cbd5e1;
+            --nav-bg: rgba(255, 255, 255, 0.95);
+            --hover-bg: rgba(37, 99, 235, 0.06);
+            --btn-primary-bg: #2563eb;
             --btn-primary-text: #ffffff;
             --logo-filter: none;
-            --input-bg: #ffffff;
-            --shadow-color: rgba(0, 0, 0, 0.05);
+            --input-bg: #f8fafc;
+            --shadow-color: rgba(0, 50, 100, 0.08);
+            --accent: #2563eb;
         }
 
         * {
@@ -130,7 +115,7 @@
         }
 
         .navbar-brand img {
-            max-height: 60px;
+            max-height: 100px;
             /* Logo más grande */
             filter: var(--logo-filter);
             transition: filter 0.3s ease;
@@ -372,31 +357,21 @@
 <body>
 
     <nav class="navbar navbar-expand-lg sticky-top glass"
-        style="z-index: 1040; border-bottom: 1px solid var(--border);">
+        style="z-index: 1040; border-bottom: 1px solid var(--card-border); padding: 0.5rem 1.5rem;">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('home') }}">
+            <a class="navbar-brand" href="{{ route('home') }}" style="padding: 0.25rem 0;">
                 <img src="{{ asset('images/logo.png') }}" alt="UniStock Logo"
-                    onerror="this.onerror=null; this.src=''; this.alt='[Logo]'"
-                    style="max-height: 80px; filter: var(--logo-filter);">
+                    onerror="this.onerror=null; this.src=''; this.alt='UniStock'; this.style.fontSize='1.8rem'; this.style.fontWeight='800'; this.style.color='#2563eb';"
+                    style="max-height: 70px; filter: var(--logo-filter); transition: transform 0.3s ease;"
+                    onmouseover="this.style.transform='scale(1.05)'"
+                    onmouseout="this.style.transform='scale(1)'">
             </a>
-            <button id="themeToggle" class="btn btn-link text-white ms-3" style="font-size:1.2rem;"
-                title="Toggle Dark/Light Theme"><i class="fas fa-moon"></i></button>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    @guest
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
-                        </li>
-                        @if(Route::has('register'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}"><i class="fas fa-user-plus"></i> Register</a>
-                            </li>
-                        @endif
-                    @endguest
-
+                <ul class="navbar-nav ms-auto align-items-center">
                     @auth
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
@@ -548,8 +523,8 @@
                                         onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';">
                                 @else
                                     <div class="user-avatar d-flex align-items-center justify-content-center"
-                                        style="background: rgba(255,255,255,0.1);">
-                                        <i class="fas fa-user" style="color: #ffffff;"></i>
+                                        style="background: #e2e8f0;">
+                                        <i class="fas fa-user" style="color: #64748b;"></i>
                                     </div>
                                 @endif
                                 <span class="ms-2">{{ Auth::user()->name }}</span>
@@ -642,7 +617,8 @@
                             onclick="closeLoginToast()"></button>
                     </div>
                     <p class="text-muted small mb-2" style="font-size: 0.82rem; line-height: 1.3;">
-                        {{ $alertaPrioritaria['mensaje'] }}</p>
+                        {{ $alertaPrioritaria['mensaje'] }}
+                    </p>
                     <a href="{{ $alertaPrioritaria['ruta'] }}" class="btn btn-sm btn-light py-1 px-3"
                         style="font-size: 0.75rem; font-weight: 700; border: 1px solid #e5e7eb;">
                         Ver Detalle <i class="fas fa-chevron-right ms-1" style="font-size: 0.65rem;"></i>
@@ -790,19 +766,7 @@
         });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const themeToggle = document.getElementById('themeToggle');
-            const root = document.documentElement;
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) root.dataset.theme = savedTheme;
-            if (themeToggle) {
-                themeToggle.addEventListener('click', () => {
-                    const newTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
-                    root.dataset.theme = newTheme;
-                    localStorage.setItem('theme', newTheme);
-                });
-            }
-        });
+        // Theme is fixed to light mode — no toggle needed
 
         function marcarLeida(id) {
             fetch(`/alertas/${id}/marcar`, {

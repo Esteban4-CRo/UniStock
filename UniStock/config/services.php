@@ -13,14 +13,7 @@ return [
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        // Ensure redirect URL matches the one registered in Google Console
-        // Dynamically select redirect based on environment (local vs production)
-        'redirect_local' => env('APP_URL') . '/auth/google/callback',
-        'redirect_production' => 'https://srv-d6qvl994tr6s7380vvng.onrender.com/auth/google/callback',
-        // Dynamically select redirect based on environment (local vs production)
-        'redirect' => env('APP_ENV') === 'production'
-            ? 'https://srv-d6qvl994tr6s7380vvng.onrender.com/auth/google/callback'
-            : env('APP_URL') . '/auth/google/callback',
+        'redirect' => env('GOOGLE_REDIRECT_URI', env('APP_URL') . '/auth/google/callback'),
     ],
 
     'ses' => [
