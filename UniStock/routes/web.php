@@ -106,4 +106,3 @@ Route::middleware(['auth', 'prevent-back', 'check-active'])->group(function () {
     // Alertas
     Route::post('/alertas/marcar-todas', [AlertaController::class, 'marcarTodasLeidas'])->name('alertas.marcarTodas');
     Route::post('/alertas/{id}/marcar', [AlertaController::class, 'marcarLeida'])->name('alertas.marcar');
-});
