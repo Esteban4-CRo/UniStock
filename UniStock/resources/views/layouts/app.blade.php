@@ -29,7 +29,7 @@
                 'titulo' => $titulo,
                 'mensaje' => $alerta->mensaje,
                 'ruta' => '#',
-                'tiempo' => $alerta->created_at->diffForHumans()
+                'tiempo' => $alerta->created_at->diffForHumans(),
             ];
         }
     }

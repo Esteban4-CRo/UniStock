@@ -49,7 +49,7 @@ RUN echo "APP_NAME=UniStock" >> .env && \
 ARG COMPOSER_INSTALL=1
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs
 # Run Laravel Artisan commands now that .env exists
-RUN php artisan key:generate && php artisan package:discover && php artisan config:cache
+RUN php artisan key:generate && php artisan config:cache
 # Install Node.js dependencies and build assets
 RUN npm install && npm run build
 RUN php artisan storage:link
