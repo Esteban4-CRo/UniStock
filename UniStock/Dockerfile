@@ -28,10 +28,14 @@ WORKDIR /var/www/html
 # Copiar el contenido del proyecto
 COPY . /var/www/html
 
-# Instalar dependencias de PHP y Node.js, y compilar assets
-RUN composer install --no-interaction --optimize-autoloader --no-dev
-RUN npm install
-RUN npm run build
+# Copy environment file (provide dummy values for build)
+COPY .env.example .env
+# Install PHP dependencies without running post‑autoload scripts (they need env vars)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+# Run Laravel Artisan commands now that .env exists
+RUN php artisan key:generate && php artisan package:discover && php artisan config:cache
+# Install Node.js dependencies and build assets
+RUN npm install && npm run build
 RUN php artisan storage:link
 
 # Configurar Apache para que apunte a la carpeta public
