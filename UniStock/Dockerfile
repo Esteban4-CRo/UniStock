@@ -29,10 +29,25 @@ WORKDIR /var/www/html
 COPY . /var/www/html
 
 # Copy environment file (provide dummy values for build)
+# Copy environment file and fill required vars for build
 COPY .env.example .env
-RUN echo "GOOGLE_CLIENT_ID=dev" >> .env && echo "GOOGLE_CLIENT_SECRET=dev" >> .env && echo "GOOGLE_REDIRECT_URI=https://example.com/auth/google/callback" >> .env
+RUN echo "APP_NAME=UniStock" >> .env && \
+    echo "APP_ENV=production" >> .env && \
+    echo "APP_DEBUG=false" >> .env && \
+    echo "APP_URL=https://example.com" >> .env && \
+    echo "DB_CONNECTION=pgsql" >> .env && \
+    echo "DB_HOST=aws-1-us-east-2.pooler.supabase.com" >> .env && \
+    echo "DB_PORT=5432" >> .env && \
+    echo "DB_DATABASE=postgres" >> .env && \
+    echo "DB_USERNAME=postgres" >> .env && \
+    echo "DB_PASSWORD=secret" >> .env && \
+    echo "GOOGLE_CLIENT_ID=dev" >> .env && \
+    echo "GOOGLE_CLIENT_SECRET=dev" >> .env && \
+    echo "GOOGLE_REDIRECT_URI=https://example.com/auth/google/callback" >> .env
+
 # Install PHP dependencies without running post‑autoload scripts (they need env vars)
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+ARG COMPOSER_INSTALL=1
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs
 # Run Laravel Artisan commands now that .env exists
 RUN php artisan key:generate && php artisan package:discover && php artisan config:cache
 # Install Node.js dependencies and build assets
