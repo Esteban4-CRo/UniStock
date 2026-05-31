@@ -111,10 +111,12 @@ class RegisterController extends Controller
 
     protected function registered(\Illuminate\Http\Request $request, $user)
     {
-        try {
-            \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\LoginAlertMail($user));
-        } catch (\Exception $e) {
-            \Log::error('No se pudo enviar el correo de bienvenida/alerta: ' . $e->getMessage());
-        }
+        dispatch(function () use ($user) {
+            try {
+                \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\LoginAlertMail($user));
+            } catch (\Exception $e) {
+                \Log::error('No se pudo enviar el correo de bienvenida/alerta: ' . $e->getMessage());
+            }
+        })->afterResponse();
     }
 }
