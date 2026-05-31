@@ -52,5 +52,5 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
-# At startup: cache config+routes with REAL env vars from Render, then launch Apache
-CMD bash -c "php artisan config:cache && php artisan route:cache && apache2-foreground"
+# At startup: cache config+routes with REAL env vars from Render, run migrations, then launch Apache
+CMD bash -c "php artisan config:cache && php artisan route:cache && php artisan migrate --force && apache2-foreground"
