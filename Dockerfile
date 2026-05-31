@@ -17,8 +17,8 @@ WORKDIR /var/www/html
 # Copy the actual Laravel project (inside UniStock/ subfolder)
 COPY UniStock/ .
 
-# Apache virtual host: AllowOverride All so .htaccess works, dynamic $PORT for Render
-RUN printf '<VirtualHost *:${PORT}>\n\
+# Configure Apache VirtualHost properly for Laravel
+RUN echo '<VirtualHost *>\n\
     DocumentRoot /var/www/html/public\n\
     <Directory /var/www/html/public>\n\
         Options Indexes FollowSymLinks\n\
@@ -27,21 +27,18 @@ RUN printf '<VirtualHost *:${PORT}>\n\
     </Directory>\n\
     ErrorLog ${APACHE_LOG_DIR}/error.log\n\
     CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
-</VirtualHost>\n' > /etc/apache2/sites-available/000-default.conf
-
-# Make Apache listen on the dynamic $PORT that Render assigns
-RUN sed -i 's/Listen 80/Listen ${PORT}/' /etc/apache2/ports.conf
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
 # Create .env from example for build-time steps
 RUN cp .env.example .env
 
-# Install PHP deps WITHOUT running post-install scripts (avoids artisan at build time)
+# Install PHP deps WITHOUT running post-install scripts
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 # Build frontend assets
 RUN npm install && npm run build
 
-# Generate a placeholder app key (Render overrides with APP_KEY env var at runtime)
+# Generate placeholder key
 RUN php artisan key:generate
 
 # Storage symlink
@@ -52,5 +49,5 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
-# At startup: cache config+routes with REAL env vars from Render, run migrations, then launch Apache
-CMD bash -c "php artisan config:cache && php artisan route:cache && php artisan migrate --force && apache2-foreground"
+# Startup script: dynamically set Apache port, clear caches (avoids 404), run migrations, start apache
+CMD bash -c "sed -i \"s/Listen 80/Listen \${PORT:-80}/\" /etc/apache2/ports.conf && php artisan config:clear && php artisan route:clear && php artisan migrate --force && apache2-foreground"
