@@ -67,19 +67,22 @@ class SalidaController extends Controller
             // Verificar si el nuevo stock está en o por debajo del mínimo
             $nuevoStock = $material->fresh()->cantidad;
             if ($nuevoStock <= $material->stock_minimo) {
-                try {
-                    $alerts = [
-                        [
-                            'nombre' => $material->nombre,
-                            'codigo' => $material->codigo,
-                            'cantidad' => $nuevoStock,
-                            'stock_minimo' => $material->stock_minimo
-                        ]
-                    ];
-                    \Illuminate\Support\Facades\Mail::to(Auth::user()->email)->send(new \App\Mail\StockAlertMail($alerts));
-                } catch (\Exception $e) {
-                    \Illuminate\Support\Facades\Log::error('No se pudo enviar correo de alerta: ' . $e->getMessage());
-                }
+                $userEmail = \Illuminate\Support\Facades\Auth::user()->email;
+                dispatch(function () use ($material, $nuevoStock, $userEmail) {
+                    try {
+                        $alerts = [
+                            [
+                                'nombre' => $material->nombre,
+                                'codigo' => $material->codigo,
+                                'cantidad' => $nuevoStock,
+                                'stock_minimo' => $material->stock_minimo
+                            ]
+                        ];
+                        \Illuminate\Support\Facades\Mail::to($userEmail)->send(new \App\Mail\StockAlertMail($alerts));
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error('No se pudo enviar correo de alerta: ' . $e->getMessage());
+                    }
+                })->afterResponse();
             }
         }
 

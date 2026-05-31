@@ -47,12 +47,14 @@ class LoginController extends Controller
 
     public function authenticated(\Illuminate\Http\Request $request, $user)
     {
-        // Send Email Alert on normal login too
-        try {
-            Mail::to($user->email)->send(new LoginAlertMail($user));
-        } catch (\Exception $e) {
-            \Log::error('No se pudo enviar el correo de alerta: ' . $e->getMessage());
-        }
+        // Send Email Alert in background to avoid blocking login response
+        dispatch(function () use ($user) {
+            try {
+                Mail::to($user->email)->send(new LoginAlertMail($user));
+            } catch (\Exception $e) {
+                \Log::error('No se pudo enviar el correo de alerta: ' . $e->getMessage());
+            }
+        })->afterResponse();
     }
 
     public function redirectToGoogle()
@@ -94,12 +96,14 @@ class LoginController extends Controller
 
             Auth::login($user, true);
 
-            // Send Email Alert
-            try {
-                Mail::to($user->email)->send(new LoginAlertMail($user));
-            } catch (\Exception $e) {
-                \Log::error('No se pudo enviar el correo de alerta: ' . $e->getMessage());
-            }
+            // Send Email Alert in background
+            dispatch(function () use ($user) {
+                try {
+                    Mail::to($user->email)->send(new LoginAlertMail($user));
+                } catch (\Exception $e) {
+                    \Log::error('No se pudo enviar el correo de alerta: ' . $e->getMessage());
+                }
+            })->afterResponse();
 
             return redirect()->intended('/home');
 
