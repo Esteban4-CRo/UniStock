@@ -18,16 +18,7 @@ WORKDIR /var/www/html
 COPY UniStock/ .
 
 # Configure Apache VirtualHost properly for Laravel
-RUN echo '<VirtualHost *>\n\
-    DocumentRoot /var/www/html/public\n\
-    <Directory /var/www/html/public>\n\
-        Options Indexes FollowSymLinks\n\
-        AllowOverride All\n\
-        Require all granted\n\
-    </Directory>\n\
-    ErrorLog ${APACHE_LOG_DIR}/error.log\n\
-    CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
-</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
+COPY apache-laravel.conf /etc/apache2/sites-available/000-default.conf
 
 # Create .env from example for build-time steps
 RUN cp .env.example .env
