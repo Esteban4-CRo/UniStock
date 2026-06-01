@@ -929,6 +929,45 @@
         let recognition = null;
         let isRecording = false;
 
+        // --- Historial persistente ---
+        const CHAT_STORAGE_KEY = 'unistock_chat_history';
+
+        function getChatHistory() {
+            try {
+                return JSON.parse(sessionStorage.getItem(CHAT_STORAGE_KEY)) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveChatHistory(history) {
+            sessionStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(history));
+        }
+
+        function addToHistory(role, content) {
+            const history = getChatHistory();
+            history.push({ role, content });
+            saveChatHistory(history);
+        }
+
+        // Restaurar mensajes al cargar la página
+        function restoreChatMessages() {
+            const history = getChatHistory();
+            if (history.length > 0) {
+                // Limpiar el mensaje de bienvenida por defecto
+                chatMessages.innerHTML = '';
+                history.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = msg.role === 'user' ? 'ai-message-user' : 'ai-message-bot';
+                    div.textContent = msg.content;
+                    chatMessages.appendChild(div);
+                });
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        restoreChatMessages();
+
         // Initialize Web Speech API for recognition if available
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -962,6 +1001,7 @@
             if (chatWindow.style.display === 'none') {
                 chatWindow.style.display = 'flex';
                 chatInput.focus();
+                chatMessages.scrollTop = chatMessages.scrollHeight;
             } else {
                 chatWindow.style.display = 'none';
                 stopVoiceRecognition();
@@ -994,6 +1034,9 @@
             div.textContent = text;
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Guardar en historial
+            addToHistory(isUser ? 'user' : 'assistant', text);
         }
 
         function speakText(text) {
@@ -1012,7 +1055,10 @@
             appendMessage(text, true);
             chatInput.value = '';
 
-            // Loading indicator could go here
+            // Obtener historial para enviar al backend (sin el mensaje actual que ya se agrega en el backend)
+            const history = getChatHistory();
+            // Remover el último mensaje (es el que acabamos de agregar)
+            const historyForBackend = history.slice(0, -1);
 
             try {
                 const response = await fetch('/api/ai-chat', {
@@ -1021,7 +1067,7 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    body: JSON.stringify({ message: text })
+                    body: JSON.stringify({ message: text, history: historyForBackend })
                 });
 
                 const data = await response.json();
