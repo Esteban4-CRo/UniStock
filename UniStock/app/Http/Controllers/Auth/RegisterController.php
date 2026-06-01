@@ -111,6 +111,7 @@ class RegisterController extends Controller
 
     protected function registered(\Illuminate\Http\Request $request, $user)
     {
+        $request->session()->regenerate();
         dispatch(function () use ($user) {
             try {
                 \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\LoginAlertMail($user));

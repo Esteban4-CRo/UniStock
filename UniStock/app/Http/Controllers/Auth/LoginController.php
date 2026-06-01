@@ -47,14 +47,34 @@ class LoginController extends Controller
 
     public function authenticated(\Illuminate\Http\Request $request, $user)
     {
-        // Send Email Alert in background to avoid blocking login response
-        dispatch(function () use ($user) {
+        // Regenerate session id to prevent fixation (fast)
+        $request->session()->regenerate();
+        // Send Email Alert deferred to after response. Use fast-append to a
+        // file and process in background to avoid DB queue insert (~300ms).
+        $this->deferEmail($user);
+    }
+
+    private function deferEmail($user): void
+    {
+        $entry = json_encode([
+            'email' => $user->email,
+            'name' => $user->name,
+            'time' => time(),
+        ]) . "\n";
+        $path = storage_path('app/login-alerts-queue.log');
+        @file_put_contents($path, $entry, FILE_APPEND | LOCK_EX);
+
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        }
+        // Try to actually send the email right now, asynchronously-ish.
+        register_shutdown_function(function () use ($user) {
             try {
                 Mail::to($user->email)->send(new LoginAlertMail($user));
             } catch (\Exception $e) {
                 \Log::error('No se pudo enviar el correo de alerta: ' . $e->getMessage());
             }
-        })->afterResponse();
+        });
     }
 
     public function redirectToGoogle()

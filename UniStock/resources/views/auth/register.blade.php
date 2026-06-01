@@ -2,7 +2,7 @@
 
 @section('content')
 <x-auth-card title="CREAR CUENTA">
-    <form method="POST" action="{{ route('register') }}" id="registerForm">
+    <form method="POST" action="{{ route('register') }}" id="registerForm" novalidate>
         @csrf
         <!-- Role Selection -->
         <div class="mb-4">
@@ -81,7 +81,13 @@
             </div>
         </div>
         <div class="mt-4">
-            <button type="submit" class="btn w-100 bw-btn">Completar Registro</button>
+            <button type="submit" id="registerSubmitBtn" class="btn w-100 bw-btn position-relative">
+                <span class="btn-text">Completar Registro</span>
+                <span class="btn-spinner d-none">
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Creando cuenta...
+                </span>
+            </button>
         </div>
     </form>
 </x-auth-card>
@@ -91,10 +97,23 @@
         from { opacity: 0; transform: translateY(-10px); }
         to { opacity: 1; transform: translateY(0); }
     }
+
+    .btn-spinner .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        border-width: 0.18em;
+        vertical-align: middle;
+    }
+
+    .bw-btn:disabled {
+        opacity: 0.75;
+        cursor: not-allowed;
+        transform: none !important;
+    }
 </style>
 
-<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places"></script>
-<script src="{{ asset('js/usuarios.js') }}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places" async defer></script>
+<script src="{{ asset('js/usuarios.js') }}" defer></script>
 <script>
     document.querySelectorAll('input[name="role"]').forEach(function(radio) {
         radio.addEventListener('change', function() {
@@ -105,5 +124,22 @@
             }
         });
     });
+
+    (function() {
+        const form = document.getElementById('registerForm');
+        const btn = document.getElementById('registerSubmitBtn');
+        if (!form || !btn) return;
+
+        form.addEventListener('submit', function(e) {
+            if (form.dataset.submitting === 'true') {
+                e.preventDefault();
+                return;
+            }
+            form.dataset.submitting = 'true';
+            btn.disabled = true;
+            btn.querySelector('.btn-text').classList.add('d-none');
+            btn.querySelector('.btn-spinner').classList.remove('d-none');
+        });
+    })();
 </script>
 @endsection

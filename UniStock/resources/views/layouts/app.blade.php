@@ -1,36 +1,46 @@
 @php
     $alertasNotif = [];
     if (Auth::check()) {
-        $alertasDB = \App\Models\Alerta::where('user_id', Auth::id())
-            ->where('estado', 'activa')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        try {
+            $cacheKey = 'alertas_notif_' . Auth::id();
+            $alertasNotif = \Illuminate\Support\Facades\Cache::remember($cacheKey, 30, function () {
+                $rows = \App\Models\Alerta::where('user_id', Auth::id())
+                    ->where('estado', 'activa')
+                    ->orderBy('created_at', 'desc')
+                    ->limit(10)
+                    ->get();
 
-        foreach ($alertasDB as $alerta) {
-            $icono = 'fas fa-bell';
-            $nivel = 'info';
-            $titulo = 'Notificación';
+                $items = [];
+                foreach ($rows as $alerta) {
+                    $icono = 'fas fa-bell';
+                    $nivel = 'info';
+                    $titulo = 'Notificación';
 
-            if ($alerta->tipo === 'stock_bajo') {
-                $icono = 'fas fa-exclamation-triangle';
-                $nivel = 'danger';
-                $titulo = 'Alerta de Stock';
-            } elseif ($alerta->tipo === 'vencimiento') {
-                $icono = 'fas fa-hourglass-half';
-                $nivel = 'warning';
-                $titulo = 'Vencimiento';
-            }
+                    if ($alerta->tipo === 'stock_bajo') {
+                        $icono = 'fas fa-exclamation-triangle';
+                        $nivel = 'danger';
+                        $titulo = 'Alerta de Stock';
+                    } elseif ($alerta->tipo === 'vencimiento') {
+                        $icono = 'fas fa-hourglass-half';
+                        $nivel = 'warning';
+                        $titulo = 'Vencimiento';
+                    }
 
-            $alertasNotif[] = [
-                'id' => $alerta->id,
-                'tipo' => $alerta->tipo,
-                'nivel' => $nivel,
-                'icono' => $icono,
-                'titulo' => $titulo,
-                'mensaje' => $alerta->mensaje,
-                'ruta' => '#',
-                'tiempo' => $alerta->created_at->diffForHumans(),
-            ];
+                    $items[] = [
+                        'id' => $alerta->id,
+                        'tipo' => $alerta->tipo,
+                        'nivel' => $nivel,
+                        'icono' => $icono,
+                        'titulo' => $titulo,
+                        'mensaje' => $alerta->mensaje,
+                        'ruta' => '#',
+                        'tiempo' => $alerta->created_at->diffForHumans(),
+                    ];
+                }
+                return $items;
+            });
+        } catch (\Exception $e) {
+            $alertasNotif = [];
         }
     }
 @endphp
@@ -41,8 +51,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'UniStock')</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"></noscript>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"></noscript>
     @vite(['resources/js/app.js'])
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');

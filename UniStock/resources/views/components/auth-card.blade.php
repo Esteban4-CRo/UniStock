@@ -179,7 +179,38 @@
         background-color: #2563eb;
         border-color: #2563eb;
     }
+
+    .bw-btn-google:disabled,
+    .bw-btn-google.loading {
+        opacity: 0.75;
+        cursor: wait;
+        pointer-events: none;
+        transform: none !important;
+    }
+
+    .bw-btn-google .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        border-width: 0.18em;
+    }
 </style>
+<script>
+    (function() {
+        const btn = document.getElementById('googleLoginBtn');
+        if (!btn) return;
+        btn.addEventListener('click', function(e) {
+            if (btn.classList.contains('loading')) {
+                e.preventDefault();
+                return;
+            }
+            btn.classList.add('loading');
+            const content = btn.querySelector('.google-btn-content');
+            const spinner = btn.querySelector('.google-btn-spinner');
+            if (content) content.classList.add('d-none');
+            if (spinner) spinner.classList.remove('d-none');
+        });
+    })();
+</script>
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-5">
@@ -195,9 +226,15 @@
                             {{ $title == 'INICIAR SESIÓN' ? 'Accede a tu cuenta' : 'Únete a la plataforma de inventario del futuro' }}
                         </p>
                     </div>
-                    <a href="{{ route('google.login') }}"
+                    <a href="{{ route('google.login') }}" id="googleLoginBtn"
                         class="btn w-100 mb-3 d-flex align-items-center justify-content-center bw-btn-google">
-                        <i class="fab fa-google me-2" style="font-size:1.2rem; color:#4285F4;"></i> Continuar con Google
+                        <span class="google-btn-content">
+                            <i class="fab fa-google me-2" style="font-size:1.2rem; color:#4285F4;"></i> Continuar con Google
+                        </span>
+                        <span class="google-btn-spinner d-none">
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Redirigiendo a Google...
+                        </span>
                     </a>
                     <div class="separator">O</div>
 

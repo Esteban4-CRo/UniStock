@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'prevent-back' => \App\Http\Middleware\PreventBackHistory::class,
             'check-active' => \App\Http\Middleware\CheckUserActive::class,
+            'warm-db' => \App\Http\Middleware\WarmDbConnection::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
