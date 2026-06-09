@@ -3,6 +3,7 @@ import api from '../api';
 
 export default function MateriasPrimas() {
     const [materias, setMaterias] = useState([]);
+    const [codigo, setCodigo] = useState('');
     const [nombre, setNombre] = useState('');
     const [unidad, setUnidad] = useState('');
     const [minimo, setMinimo] = useState('');
@@ -23,9 +24,9 @@ export default function MateriasPrimas() {
         e.preventDefault();
         setSaving(true);
         try {
-            await api.post('material-primas/', { nombre, unidad_medida: unidad, stock_minimo: minimo, stock_actual: 0 });
+            await api.post('material-primas/', { codigo, nombre, unidad_medida: unidad, stock_minimo: minimo, stock_actual: 0 });
             loadData();
-            setNombre(''); setUnidad(''); setMinimo('');
+            setCodigo(''); setNombre(''); setUnidad(''); setMinimo('');
         } catch (err) { console.error(err); }
         finally { setSaving(false); }
     };
@@ -47,6 +48,10 @@ export default function MateriasPrimas() {
                     <div className="card-header">➕ Nueva Materia Prima</div>
                     <div className="card-body">
                         <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label className="form-label">Código</label>
+                                <input type="text" className="form-control" placeholder="Ej: MAT-01" value={codigo} onChange={e => setCodigo(e.target.value)} required />
+                            </div>
                             <div className="form-group">
                                 <label className="form-label">Nombre</label>
                                 <input type="text" className="form-control" placeholder="Ej: Cemento Portland" value={nombre} onChange={e => setNombre(e.target.value)} required />
@@ -85,7 +90,7 @@ export default function MateriasPrimas() {
                                 <table className="data-table">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
+                                            <th>Código</th>
                                             <th>Nombre</th>
                                             <th>Unidad</th>
                                             <th>Stock Actual</th>
@@ -98,7 +103,7 @@ export default function MateriasPrimas() {
                                             const isLow = parseFloat(m.stock_actual) <= parseFloat(m.stock_minimo);
                                             return (
                                                 <tr key={m.id}>
-                                                    <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>#{m.id}</td>
+                                                    <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>{m.codigo || `#${m.id}`}</td>
                                                     <td style={{ fontWeight: 600 }}>{m.nombre}</td>
                                                     <td style={{ color: 'var(--text-secondary)' }}>{m.unidad_medida}</td>
                                                     <td>
