@@ -279,12 +279,12 @@ function Auth({ setAuth }) {
                 <div className="auth-card-header" style={{ position: 'relative' }}>
                     <button 
                         onClick={() => navigate('/')} 
-                        className="btn btn-secondary" 
-                        style={{ position: 'absolute', top: '-1.5rem', left: '-1.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
+                        className="btn" 
+                        style={{ position: 'absolute', top: 0, left: 0, background: 'transparent', color: 'var(--text-muted)', padding: '0.5rem', border: 'none', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
                     >
-                        &larr; Volver
+                        <AlertCircle size={16} /> Volver
                     </button>
-                    <div className="auth-title">UniStock</div>
+                    <div className="auth-title" style={{ marginTop: '1.5rem' }}>UniStock</div>
                     <div className="auth-subtitle">Sistema de gestión de inventario</div>
                 </div>
 
