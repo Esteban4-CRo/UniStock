@@ -18,10 +18,13 @@ export default function RoleSelect({ onRoleSelected }) {
             return;
         }
 
+        const latitud = e.target.elements.latitud?.value;
+        const longitud = e.target.elements.longitud?.value;
+
         setLoading(true);
         setError('');
         try {
-            await api.post('role/update/', { role });
+            await api.post('role/update/', { role, latitud, longitud });
             localStorage.removeItem('needs_role');
             localStorage.setItem('user_role', role);
             onRoleSelected();
@@ -110,6 +113,27 @@ export default function RoleSelect({ onRoleSelected }) {
                                 </div>
                             </label>
                         </div>
+
+                        {(role === 'proveedor' || role === 'almacenista') && (
+                            <div style={{ marginBottom: '2rem' }}>
+                                <h5>Datos de Verificación (Google Maps)</h5>
+                                <div className="form-group mb-3">
+                                    <label>Latitud</label>
+                                    <input 
+                                        type="number" step="any" className="form-control" 
+                                        name="latitud" id="latitud" placeholder="Ej: 4.6097100" required
+                                    />
+                                </div>
+                                <div className="form-group mb-3">
+                                    <label>Longitud</label>
+                                    <input 
+                                        type="number" step="any" className="form-control" 
+                                        name="longitud" id="longitud" placeholder="Ej: -74.0817500" required
+                                    />
+                                </div>
+                                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Estos datos serán verificados por el gerente para activar tu cuenta.</p>
+                            </div>
+                        )}
 
                         <button type="submit" className="btn btn-primary btn-block btn-lg" disabled={loading || !role}>
                             {loading ? <><span className="spinner" style={{ width:16, height:16, borderWidth:2 }} /> Guardando...</> : <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>Continuar al Dashboard <ArrowRight size={18} /></span>}

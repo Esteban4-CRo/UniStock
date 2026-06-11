@@ -672,8 +672,9 @@ textarea.form-control { resize:vertical; min-height:90px; }
 }
 
 .auth-page {
-  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background: linear-gradient(-45deg, #111111, #444444, #888888, #222222);
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
+  filter: grayscale(100%);
 }
 

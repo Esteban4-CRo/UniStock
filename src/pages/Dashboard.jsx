@@ -36,7 +36,7 @@ export default function Dashboard() {
         finally { setLoading(false); }
     };
 
-    const lowStock       = materias.filter(m => parseFloat(m.stock_actual) <= parseFloat(m.stock_minimo));
+    const lowStock       = materias.filter(m => parseFloat(m.cantidad) <= parseFloat(m.stock_minimo));
     const entradasMes    = entradas.filter(e => !e.anulado);
     const salidasMes     = salidas.filter(s => !s.anulado);
     const volEntradas    = entradasMes.reduce((a, e) => a + parseFloat(e.cantidad||0), 0);
@@ -133,7 +133,7 @@ export default function Dashboard() {
                                             <div>
                                                 <div style={{ fontSize:'0.825rem', fontWeight:600, color:'var(--text-primary)' }}>{a.mensaje}</div>
                                                 <div style={{ fontSize:'0.7rem', color:'var(--text-muted)', marginTop:'0.15rem' }}>
-                                                    {new Date(a.fecha_creacion).toLocaleString('es-CO')}
+                                                    {a.created_at ? new Date(a.created_at).toLocaleString('es-CO') : ''}
                                                 </div>
                                             </div>
                                         </div>
@@ -159,7 +159,7 @@ export default function Dashboard() {
                             ) : (
                                 <div style={{ maxHeight:300, overflowY:'auto' }}>
                                     {materias.map(m => {
-                                        const actual  = parseFloat(m.stock_actual);
+                                        const actual  = parseFloat(m.cantidad);
                                         const minimo  = parseFloat(m.stock_minimo);
                                         const isLow   = actual <= minimo;
                                         const pct     = minimo > 0 ? Math.min(100, (actual / (minimo * 2)) * 100) : (actual > 0 ? 80 : 0);
@@ -168,7 +168,7 @@ export default function Dashboard() {
                                                 <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'0.3rem', alignItems:'center' }}>
                                                     <span style={{ fontSize:'0.825rem', fontWeight:600 }}>{m.nombre}</span>
                                                     <span style={{ fontSize:'0.75rem', fontWeight:700, color: isLow ? 'var(--danger)' : 'var(--success)' }}>
-                                                        {m.stock_actual} {m.unidad_medida}
+                                                        {m.cantidad} {m.unidad_medida}
                                                     </span>
                                                 </div>
                                                 <div className="progress">

@@ -103,6 +103,7 @@ export default function Usuarios() {
                                             <th>Username</th>
                                             <th>Email</th>
                                             <th>Rol</th>
+                                            <th>Verificación</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -114,7 +115,29 @@ export default function Usuarios() {
                                                 <td>
                                                     {u.role === 'gerente' ? <span className="badge badge-accent">Gerente</span> 
                                                     : u.role === 'proveedor' ? <span className="badge badge-warning">Proveedor</span>
+                                                    : u.role === 'almacenista' ? <span className="badge badge-primary">Almacenista</span>
                                                     : <span className="badge badge-neutral">Usuario</span>}
+                                                </td>
+                                                <td>
+                                                    {u.profile && u.profile.latitud && u.profile.longitud && (
+                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                                                            <a href={`https://www.google.com/maps?q=${u.profile.latitud},${u.profile.longitud}`} target="_blank" rel="noreferrer" style={{ fontSize: '0.8rem', color: 'var(--accent)' }}>
+                                                                📍 Ver en Mapa
+                                                            </a>
+                                                            {u.profile.estado_validacion === 'pendiente' ? (
+                                                                <button className="btn btn-sm" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem', background: 'var(--success)', color: 'white', border: 'none', borderRadius: '4px' }}
+                                                                    onClick={async () => {
+                                                                        await api.post(`users/${u.id}/verificar/`);
+                                                                        loadData();
+                                                                    }}
+                                                                >
+                                                                    Aprobar
+                                                                </button>
+                                                            ) : (
+                                                                <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>Verificado</span>
+                                                            )}
+                                                        </div>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))}
