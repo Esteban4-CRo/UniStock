@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
 import api from '../api';
 import { Users, Search, Filter, UserPlus } from 'lucide-react';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 export default function Usuarios() {
     const [usuarios, setUsuarios] = useState([]);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRole] = useState('usuario');
+    const [filterPending, setFilterPending] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -29,9 +34,9 @@ export default function Usuarios() {
         e.preventDefault();
         setSaving(true);
         try {
-            await api.post('users/', { username, email, password });
+            await api.post('users/', { username, email, password, role });
             loadData();
-            setUsername(''); setEmail(''); setPassword('');
+            setUsername(''); setEmail(''); setPassword(''); setRole('usuario');
         } catch (err) {
             console.error(err);
         } finally {
@@ -65,6 +70,15 @@ export default function Usuarios() {
                                 <label className="form-label">Password</label>
                                 <input type="password" className="form-control" placeholder="Mínimo 6 caracteres" value={password} onChange={e=>setPassword(e.target.value)} required />
                             </div>
+                            <div className="form-group">
+                                <label className="form-label">Rol del Usuario</label>
+                                <select className="form-select" value={role} onChange={e=>setRole(e.target.value)}>
+                                    <option value="usuario">Usuario Estándar</option>
+                                    <option value="gerente">Gerente</option>
+                                    <option value="almacenista">Almacenista</option>
+                                    <option value="proveedor">Proveedor</option>
+                                </select>
+                            </div>
                             <button type="submit" className="btn btn-primary btn-block" disabled={saving}>
                                 {saving ? <><span className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Creando...</> : 'Crear Usuario'}
                             </button>
@@ -77,11 +91,23 @@ export default function Usuarios() {
                         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                             <div className="form-control" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.8rem', width: '250px' }}>
                                 <Search size={14} color="var(--text-muted)" />
-                                <input type="text" placeholder="Buscar usuario..." style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%', fontSize: '0.85rem' }} />
+                                <input type="text" placeholder="Buscar usuario..." value={searchTerm} onChange={e=>setSearchTerm(e.target.value)} style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%', fontSize: '0.85rem' }} />
                             </div>
-                            <button className="btn btn-secondary btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Filter size={14} /> Filtros</button>
+                            
+                            <button 
+                                className={`btn btn-sm ${filterPending ? 'btn-primary' : 'btn-secondary'}`} 
+                                style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                                onClick={() => setFilterPending(!filterPending)}
+                            >
+                                <Filter size={14} /> {filterPending ? 'Ver Todos' : 'Confirmar Proveedores'}
+                                {usuarios.filter(u => u.profile?.estado_validacion === 'pendiente').length > 0 && (
+                                    <span style={{ background: 'var(--danger)', color: 'white', padding: '0.1rem 0.4rem', borderRadius: '99px', fontSize: '0.6rem' }}>
+                                        {usuarios.filter(u => u.profile?.estado_validacion === 'pendiente').length}
+                                    </span>
+                                )}
+                            </button>
                         </div>
-                        <span className="badge badge-neutral">{usuarios.length} cuentas</span>
+                        <span className="badge badge-neutral">{filterPending ? usuarios.filter(u => u.profile?.estado_validacion === 'pendiente').length : usuarios.length} cuentas</span>
                     </div>
                     <div className="card-body" style={{ padding: 0 }}>
                         {loading ? (
@@ -99,39 +125,62 @@ export default function Usuarios() {
                                 <table className="data-table">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Username</th>
-                                            <th>Email</th>
+                                            <th>Foto</th>
+                                            <th>Usuario</th>
+                                            <th>Nombres</th>
+                                            <th>Correo</th>
                                             <th>Rol</th>
-                                            <th>Verificación</th>
+                                            <th>Ubicación / Acción</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {usuarios.map(u => (
+                                        {usuarios
+                                            .filter(u => !filterPending || u.profile?.estado_validacion === 'pendiente')
+                                            .filter(u => !searchTerm || u.username.toLowerCase().includes(searchTerm.toLowerCase()) || u.email.toLowerCase().includes(searchTerm.toLowerCase()) || (u.first_name + ' ' + u.last_name).toLowerCase().includes(searchTerm.toLowerCase()))
+                                            .map(u => (
                                             <tr key={u.id}>
-                                                <td style={{ color: 'var(--text-muted)' }}>#{u.id}</td>
-                                                <td style={{ fontWeight: 600 }}>{u.username}</td>
+                                                <td>
+                                                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#eee', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                        {u.photo ? (
+                                                            <img src={u.photo} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                        ) : (
+                                                            <Users size={20} color="#aaa" />
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td style={{ fontWeight: 600 }}>@{u.username}</td>
+                                                <td>{u.first_name} {u.last_name}</td>
                                                 <td style={{ color: 'var(--text-secondary)' }}>{u.email}</td>
                                                 <td>
                                                     {u.role === 'gerente' ? <span className="badge badge-accent">Gerente</span> 
                                                     : u.role === 'proveedor' ? <span className="badge badge-warning">Proveedor</span>
-                                                    : u.role === 'almacenista' ? <span className="badge badge-primary">Almacenista</span>
+                                                    : u.role === 'almacenista' ? <span className="badge badge-primary" style={{ background: 'var(--info-bg)', color: 'var(--info)', border: '1px solid var(--info-border)' }}>Almacenista</span>
                                                     : <span className="badge badge-neutral">Usuario</span>}
                                                 </td>
                                                 <td>
                                                     {u.profile && u.profile.latitud && u.profile.longitud && (
-                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                                                            <a href={`https://www.google.com/maps?q=${u.profile.latitud},${u.profile.longitud}`} target="_blank" rel="noreferrer" style={{ fontSize: '0.8rem', color: 'var(--accent)' }}>
-                                                                📍 Ver en Mapa
-                                                            </a>
+                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '200px' }}>
+                                                            {u.role === 'proveedor' ? (
+                                                                <div style={{ height: '120px', width: '100%', borderRadius: 'var(--radius-sm)', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
+                                                                    <MapContainer center={[u.profile.latitud, u.profile.longitud]} zoom={13} style={{ height: '100%', width: '100%' }} zoomControl={false}>
+                                                                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap" />
+                                                                        <Marker position={[u.profile.latitud, u.profile.longitud]} />
+                                                                    </MapContainer>
+                                                                </div>
+                                                            ) : (
+                                                                <a href={`https://www.google.com/maps?q=${u.profile.latitud},${u.profile.longitud}`} target="_blank" rel="noreferrer" style={{ fontSize: '0.8rem', color: 'var(--info)', fontWeight: 600, textDecoration: 'none' }}>
+                                                                    📍 Ver en Maps
+                                                                </a>
+                                                            )}
+                                                            
                                                             {u.profile.estado_validacion === 'pendiente' ? (
-                                                                <button className="btn btn-sm" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem', background: 'var(--success)', color: 'white', border: 'none', borderRadius: '4px' }}
+                                                                <button className="btn btn-sm" style={{ padding: '0.25rem 0.6rem', fontSize: '0.7rem', background: 'var(--success)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                                                                     onClick={async () => {
                                                                         await api.post(`users/${u.id}/verificar/`);
                                                                         loadData();
                                                                     }}
                                                                 >
-                                                                    Aprobar
+                                                                    Aprobar Usuario
                                                                 </button>
                                                             ) : (
                                                                 <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>Verificado</span>

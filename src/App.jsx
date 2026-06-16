@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import api from './api';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Reportes from './pages/Reportes';
@@ -12,6 +15,24 @@ import Proveedores from './pages/Proveedores';
 import Ubicaciones from './pages/Ubicaciones';
 import AgenteIA from './pages/AgenteIA';
 import RoleSelect from './pages/RoleSelect';
+import Perfil from './pages/Perfil';
+
+// Fix Leaflet icons
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
+
+function LocationPicker({ position, setPosition }) {
+    useMapEvents({
+        click(e) {
+            setPosition([e.latlng.lat, e.latlng.lng]);
+        },
+    });
+    return position === null ? null : <Marker position={position} />;
+}
 import { LayoutDashboard, PackageOpen, Download, Upload, Factory, MapPin, Users, FileBarChart, Bot, Menu, X, LogOut } from 'lucide-react';
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
@@ -34,6 +55,7 @@ function Sidebar({ collapsed, onToggle, onLogout, alertCount, mobileOpen, setMob
     const navItems = allNavItems.filter(item => item.roles.includes(userRole) || userRole === '');
 
     const username = localStorage.getItem('user_name') || 'Usuario';
+    const userPhoto = localStorage.getItem('user_photo');
     const userInitial = username.charAt(0).toUpperCase();
 
     let lastSection = '';
@@ -92,14 +114,21 @@ function Sidebar({ collapsed, onToggle, onLogout, alertCount, mobileOpen, setMob
                 </nav>
 
                 <div className="sidebar-footer">
-                    <div className="sidebar-user" onClick={onLogout} title="Cerrar sesión">
-                        <div className="user-avatar">{userInitial}</div>
-                        <div className="user-info">
-                            <div className="user-name">{username}</div>
-                            <div className="user-role" style={{ textTransform: 'capitalize', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                                {userRole || 'Cerrar sesión'} <LogOut size={12} />
+                    <div className="sidebar-user" title="Opciones de usuario">
+                        <NavLink to="/perfil" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', color: 'inherit', flex: 1 }}>
+                            <div className="user-avatar" style={{ overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                {userPhoto && userPhoto !== 'null' ? <img src={userPhoto} alt="Perfil" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : userInitial}
                             </div>
-                        </div>
+                            <div className="user-info">
+                                <div className="user-name">{username}</div>
+                                <div className="user-role" style={{ textTransform: 'capitalize', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                                    {userRole || 'Usuario'}
+                                </div>
+                            </div>
+                        </NavLink>
+                        <button onClick={onLogout} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.5rem' }} title="Cerrar sesión">
+                            <LogOut size={16} />
+                        </button>
                     </div>
                 </div>
             </aside>
@@ -191,6 +220,7 @@ function Auth({ setAuth }) {
     const [regEmail, setRegEmail]   = useState('');
     const [regPass, setRegPass]     = useState('');
     const [regPass2, setRegPass2]   = useState('');
+    const [regPosition, setRegPosition] = useState(null);
     const [regLoading, setRegLoading] = useState(false);
     const [regError, setRegError]   = useState('');
     const [regSuccess, setRegSuccess] = useState('');
@@ -216,9 +246,11 @@ function Auth({ setAuth }) {
                     const role = me.role || '';
                     if (['gerente', 'admin', 'almacenista', 'proveedor'].includes(role)) {
                         localStorage.setItem('user_role', role);
+                        localStorage.setItem('user_photo', me.photo || '');
                         localStorage.removeItem('needs_role');
                     } else {
                         localStorage.setItem('needs_role', 'true');
+                        localStorage.setItem('user_photo', me.photo || '');
                     }
                 } else {
                     localStorage.setItem('needs_role', 'true');
@@ -252,11 +284,13 @@ function Auth({ setAuth }) {
                 password: regPass,
                 first_name: regName.split(' ')[0] || regName,
                 last_name: regName.split(' ').slice(1).join(' ') || '',
+                latitud: regPosition ? regPosition[0] : null,
+                longitud: regPosition ? regPosition[1] : null
             });
             setRegSuccess('¡Cuenta creada! Inicia sesión con tus credenciales.');
             setTab('login');
             setLoginUser(regUser);
-            setRegName(''); setRegUser(''); setRegEmail(''); setRegPass(''); setRegPass2('');
+            setRegName(''); setRegUser(''); setRegEmail(''); setRegPass(''); setRegPass2(''); setRegPosition(null);
         } catch (err) {
             const detail = err?.response?.data;
             if (detail?.username) setRegError(`Usuario: ${detail.username[0]}`);
@@ -330,6 +364,18 @@ function Auth({ setAuth }) {
                                 <div className="form-group"><label className="form-label">Email</label><input type="email" className="form-control" placeholder="juan@empresa.com" value={regEmail} onChange={e => setRegEmail(e.target.value)} required /></div>
                                 <div className="form-group"><label className="form-label">Contraseña</label><input type="password" className="form-control" placeholder="Mínimo 6 caracteres" value={regPass} onChange={e => setRegPass(e.target.value)} required /></div>
                                 <div className="form-group" style={{ marginBottom: '1.25rem' }}><label className="form-label">Confirmar Contraseña</label><input type="password" className="form-control" placeholder="Repite la contraseña" value={regPass2} onChange={e => setRegPass2(e.target.value)} required /></div>
+                                
+                                <div className="form-group" style={{ marginBottom: '1.25rem' }}>
+                                    <label className="form-label">Ubicación (Opcional - Haz clic en el mapa)</label>
+                                    <div style={{ height: '200px', width: '100%', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
+                                        <MapContainer center={[4.6097, -74.0817]} zoom={12} style={{ height: '100%', width: '100%' }}>
+                                            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap" />
+                                            <LocationPicker position={regPosition} setPosition={setRegPosition} />
+                                        </MapContainer>
+                                    </div>
+                                    {regPosition && <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: '0.5rem' }}>Seleccionado: {regPosition[0].toFixed(4)}, {regPosition[1].toFixed(4)}</small>}
+                                </div>
+
                                 <button type="submit" className="btn btn-primary btn-block btn-lg" disabled={regLoading}>
                                     {regLoading ? <><span className="spinner" style={{ width:16, height:16, borderWidth:2 }} /> Creando cuenta...</> : 'Crear Cuenta'}
                                 </button>
@@ -417,6 +463,7 @@ export default function App() {
                     <Route path="/usuarios"        element={<Usuarios />} />
                     <Route path="/reportes"        element={<Reportes />} />
                     <Route path="/agente-ia"       element={<AgenteIA />} />
+                    <Route path="/perfil"          element={<Perfil />} />
                 </Route>
             </Routes>
         </Router>

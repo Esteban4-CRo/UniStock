@@ -2,11 +2,34 @@ import { useState } from 'react';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import { UserCog, Truck, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+let DefaultIcon = L.icon({
+    iconUrl: markerIcon,
+    shadowUrl: markerShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+});
+L.Marker.prototype.options.icon = DefaultIcon;
+
+function LocationMarker({ position, setPosition }) {
+    useMapEvents({
+        click(e) {
+            setPosition(e.latlng);
+        },
+    });
+    return position === null ? null : <Marker position={position}></Marker>;
+}
 
 export default function RoleSelect({ onRoleSelected }) {
     const [role, setRole] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [position, setPosition] = useState({ lat: 4.5709, lng: -74.2973 }); // Default Colombia
     const navigate = useNavigate();
 
     const username = localStorage.getItem('user_name') || 'Usuario';
@@ -18,8 +41,8 @@ export default function RoleSelect({ onRoleSelected }) {
             return;
         }
 
-        const latitud = e.target.elements.latitud?.value;
-        const longitud = e.target.elements.longitud?.value;
+        const latitud = position.lat;
+        const longitud = position.lng;
 
         setLoading(true);
         setError('');
@@ -116,20 +139,25 @@ export default function RoleSelect({ onRoleSelected }) {
 
                         {(role === 'proveedor' || role === 'almacenista') && (
                             <div style={{ marginBottom: '2rem' }}>
-                                <h5>Datos de Verificación (Google Maps)</h5>
-                                <div className="form-group mb-3">
-                                    <label>Latitud</label>
-                                    <input 
-                                        type="number" step="any" className="form-control" 
-                                        name="latitud" id="latitud" placeholder="Ej: 4.6097100" required
-                                    />
+                                <h5>Ubicación de su Empresa</h5>
+                                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+                                    Haga clic en el mapa para marcar la ubicación exacta de su bodega o sede.
+                                </p>
+                                <div style={{ height: '300px', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--border-color)', marginBottom: '1rem' }}>
+                                    <MapContainer center={[4.5709, -74.2973]} zoom={5} style={{ height: '100%', width: '100%' }}>
+                                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                        <LocationMarker position={position} setPosition={setPosition} />
+                                    </MapContainer>
                                 </div>
-                                <div className="form-group mb-3">
-                                    <label>Longitud</label>
-                                    <input 
-                                        type="number" step="any" className="form-control" 
-                                        name="longitud" id="longitud" placeholder="Ej: -74.0817500" required
-                                    />
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                    <div className="form-group mb-3">
+                                        <label>Latitud</label>
+                                        <input type="text" className="form-control" value={position.lat.toFixed(6)} readOnly style={{ background: 'var(--bg-hover)' }} />
+                                    </div>
+                                    <div className="form-group mb-3">
+                                        <label>Longitud</label>
+                                        <input type="text" className="form-control" value={position.lng.toFixed(6)} readOnly style={{ background: 'var(--bg-hover)' }} />
+                                    </div>
                                 </div>
                                 <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Estos datos serán verificados por el gerente para activar tu cuenta.</p>
                             </div>

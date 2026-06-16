@@ -51,9 +51,9 @@ export default function Reportes() {
                         m.id,
                         m.nombre,
                         m.unidad_medida,
-                        m.stock_actual,
+                        m.cantidad,
                         m.stock_minimo,
-                        parseFloat(m.stock_actual) <= parseFloat(m.stock_minimo) ? 'STOCK BAJO' : 'NORMAL',
+                        parseFloat(m.cantidad) <= parseFloat(m.stock_minimo) ? 'STOCK BAJO' : 'NORMAL',
                     ]),
                 };
             case 'entradas':
