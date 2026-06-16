@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api';
-import { Users, Search, Filter, UserPlus } from 'lucide-react';
+import { Users, Search, Filter, UserPlus, Edit2, Trash2 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -14,6 +14,7 @@ export default function Usuarios() {
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [editingId, setEditingId] = useState(null);
 
     useEffect(() => {
         loadData();
@@ -34,13 +35,46 @@ export default function Usuarios() {
         e.preventDefault();
         setSaving(true);
         try {
-            await api.post('users/', { username, email, password, role });
+            if (editingId) {
+                const payload = { username, email, role };
+                if (password) payload.password = password;
+                await api.patch(`users/${editingId}/`, payload);
+            } else {
+                await api.post('users/', { username, email, password, role });
+            }
             loadData();
-            setUsername(''); setEmail(''); setPassword(''); setRole('usuario');
+            cancelEdit();
         } catch (err) {
             console.error(err);
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleEdit = (u) => {
+        setEditingId(u.id);
+        setUsername(u.username);
+        setEmail(u.email);
+        setPassword('');
+        setRole(u.role);
+    };
+
+    const cancelEdit = () => {
+        setEditingId(null);
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        setRole('usuario');
+    };
+
+    const handleDelete = async (id) => {
+        if (confirm('¿Seguro que deseas eliminar este usuario del sistema?')) {
+            try {
+                await api.delete(`users/${id}/`);
+                loadData();
+            } catch (err) {
+                console.error(err);
+            }
         }
     };
 
@@ -55,7 +89,10 @@ export default function Usuarios() {
 
             <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: '1rem', alignItems: 'start' }}>
                 <div className="card">
-                    <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><UserPlus size={16} /> Nuevo Usuario</div>
+                    <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        {editingId ? <Edit2 size={16} /> : <UserPlus size={16} />} 
+                        {editingId ? 'Editar Usuario' : 'Nuevo Usuario'}
+                    </div>
                     <div className="card-body">
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
@@ -67,8 +104,8 @@ export default function Usuarios() {
                                 <input type="email" className="form-control" placeholder="juan@empresa.com" value={email} onChange={e=>setEmail(e.target.value)} required />
                             </div>
                             <div className="form-group">
-                                <label className="form-label">Password</label>
-                                <input type="password" className="form-control" placeholder="Mínimo 6 caracteres" value={password} onChange={e=>setPassword(e.target.value)} required />
+                                <label className="form-label">Password {editingId && <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>(Opcional)</span>}</label>
+                                <input type="password" className="form-control" placeholder={editingId ? "Dejar en blanco para no cambiar" : "Mínimo 6 caracteres"} value={password} onChange={e=>setPassword(e.target.value)} required={!editingId} />
                             </div>
                             <div className="form-group">
                                 <label className="form-label">Rol del Usuario</label>
@@ -80,8 +117,13 @@ export default function Usuarios() {
                                 </select>
                             </div>
                             <button type="submit" className="btn btn-primary btn-block" disabled={saving}>
-                                {saving ? <><span className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Creando...</> : 'Crear Usuario'}
+                                {saving ? <><span className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> {editingId ? 'Guardando...' : 'Creando...'}</> : (editingId ? 'Guardar Cambios' : 'Crear Usuario')}
                             </button>
+                            {editingId && (
+                                <button type="button" className="btn btn-secondary btn-block" style={{ marginTop: '0.5rem' }} onClick={cancelEdit}>
+                                    Cancelar
+                                </button>
+                            )}
                         </form>
                     </div>
                 </div>
@@ -197,6 +239,12 @@ export default function Usuarios() {
                                                             ) : (
                                                                 <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>Verificado</span>
                                                             )}
+                                                        </div>
+                                                    )}
+                                                    {(!u.profile || u.profile.estado_validacion !== 'pendiente') && (
+                                                        <div style={{ display: 'flex', gap: '0.4rem', marginTop: u.profile && u.profile.latitud ? '0.5rem' : '0' }}>
+                                                            <button className="btn btn-sm btn-secondary" title="Editar" onClick={() => handleEdit(u)} style={{ padding: '0.3rem' }}><Edit2 size={14} /></button>
+                                                            <button className="btn btn-sm" title="Eliminar" onClick={() => handleDelete(u.id)} style={{ padding: '0.3rem', background: 'var(--danger)', color: 'white', border: 'none' }}><Trash2 size={14} /></button>
                                                         </div>
                                                     )}
                                                 </td>
