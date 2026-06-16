@@ -174,14 +174,26 @@ export default function Usuarios() {
                                                             )}
                                                             
                                                             {u.profile.estado_validacion === 'pendiente' ? (
-                                                                <button className="btn btn-sm" style={{ padding: '0.25rem 0.6rem', fontSize: '0.7rem', background: 'var(--success)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                                                                    onClick={async () => {
-                                                                        await api.post(`users/${u.id}/verificar/`);
-                                                                        loadData();
-                                                                    }}
-                                                                >
-                                                                    Aprobar Usuario
-                                                                </button>
+                                                                <div style={{ display: 'flex', gap: '0.4rem' }}>
+                                                                    <button className="btn btn-sm" style={{ padding: '0.25rem 0.6rem', fontSize: '0.7rem', background: 'var(--success)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', flex: 1 }}
+                                                                        onClick={async () => {
+                                                                            await api.post(`users/${u.id}/verificar/`);
+                                                                            loadData();
+                                                                        }}
+                                                                    >
+                                                                        Aprobar
+                                                                    </button>
+                                                                    <button className="btn btn-sm" style={{ padding: '0.25rem 0.6rem', fontSize: '0.7rem', background: 'var(--danger)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', flex: 1 }}
+                                                                        onClick={async () => {
+                                                                            if(confirm('¿Seguro que deseas rechazar y eliminar a este proveedor?')) {
+                                                                                await api.delete(`users/${u.id}/`);
+                                                                                loadData();
+                                                                            }
+                                                                        }}
+                                                                    >
+                                                                        Denegar
+                                                                    </button>
+                                                                </div>
                                                             ) : (
                                                                 <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>Verificado</span>
                                                             )}
