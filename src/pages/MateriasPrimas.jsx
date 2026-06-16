@@ -57,7 +57,11 @@ export default function MateriasPrimas() {
             }
             loadData();
             resetForm();
-        } catch (err) { console.error(err); alert('Error: Verifique que el codigo y nombre no esten duplicados.'); }
+        } catch (err) { 
+            console.error(err); 
+            const errorMsg = err.response?.data ? JSON.stringify(err.response.data) : err.message;
+            alert(`Error: ${errorMsg}`); 
+        }
         finally { setSaving(false); }
     };
 
