@@ -184,7 +184,7 @@ export default function Usuarios() {
                                                 <td>
                                                     <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#eee', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                         {u.photo ? (
-                                                            <img src={u.photo.startsWith('/') ? `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}${u.photo}` : u.photo} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                            <img src={u.photo.startsWith('http') ? u.photo : `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}${u.photo.startsWith('/') ? '' : '/'}${u.photo}`} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                                         ) : (
                                                             <Users size={20} color="#aaa" />
                                                         )}

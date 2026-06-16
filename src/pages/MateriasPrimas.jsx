@@ -9,6 +9,7 @@ export default function MateriasPrimas() {
     const [nombre, setNombre] = useState('');
     const [descripcion, setDescripcion] = useState('');
     const [unidad, setUnidad] = useState('unidad');
+    const [cantidad, setCantidad] = useState('0');
     const [minimo, setMinimo] = useState('0');
     const [precio, setPrecio] = useState('0');
     const [lote, setLote] = useState('');
@@ -33,7 +34,7 @@ export default function MateriasPrimas() {
     };
 
     const resetForm = () => {
-        setCodigo(''); setNombre(''); setDescripcion(''); setUnidad('unidad');
+        setCodigo(''); setNombre(''); setDescripcion(''); setUnidad('unidad'); setCantidad('0');
         setMinimo('0'); setPrecio('0'); setLote(''); setFechaCaducidad(''); setUbicacionId('');
         setEditId(null);
     };
@@ -45,6 +46,7 @@ export default function MateriasPrimas() {
             const payload = {
                 codigo, nombre, descripcion: descripcion || null,
                 unidad_medida: unidad, stock_minimo: parseInt(minimo) || 0,
+                cantidad: parseInt(cantidad) || 0,
                 precio: parseFloat(precio) || 0, lote: lote || null,
                 fecha_caducidad: fechaCaducidad || null,
                 ubicacion: ubicacionId || null,
@@ -52,7 +54,6 @@ export default function MateriasPrimas() {
             if (editId) {
                 await api.put(`material-primas/${editId}/`, payload);
             } else {
-                payload.cantidad = 0;
                 await api.post('material-primas/', payload);
             }
             loadData();
@@ -71,6 +72,7 @@ export default function MateriasPrimas() {
         setNombre(m.nombre);
         setDescripcion(m.descripcion || '');
         setUnidad(m.unidad_medida || 'unidad');
+        setCantidad(String(m.cantidad || 0));
         setMinimo(String(m.stock_minimo));
         setPrecio(String(m.precio));
         setLote(m.lote || '');
@@ -114,6 +116,10 @@ export default function MateriasPrimas() {
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                                 <div className="form-group">
+                                    <label className="form-label">Cantidad</label>
+                                    <input type="number" min="0" className="form-control" value={cantidad} onChange={e => setCantidad(e.target.value)} required />
+                                </div>
+                                <div className="form-group">
                                     <label className="form-label">Unidad Medida</label>
                                     <select className="form-select" value={unidad} onChange={e => setUnidad(e.target.value)}>
                                         <option value="unidad">Unidad</option>
@@ -124,16 +130,18 @@ export default function MateriasPrimas() {
                                         <option value="caja">Caja</option>
                                     </select>
                                 </div>
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                                 <div className="form-group">
                                     <label className="form-label">Stock Minimo</label>
                                     <input type="number" min="0" className="form-control" value={minimo} onChange={e => setMinimo(e.target.value)} />
                                 </div>
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                                 <div className="form-group">
                                     <label className="form-label">Precio</label>
                                     <input type="number" step="0.01" min="0" className="form-control" value={precio} onChange={e => setPrecio(e.target.value)} />
                                 </div>
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                                 <div className="form-group">
                                     <label className="form-label">Lote</label>
                                     <input type="text" className="form-control" placeholder="Ej: L-2024-01" value={lote} onChange={e => setLote(e.target.value)} />
