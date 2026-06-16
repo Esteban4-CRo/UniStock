@@ -41,17 +41,19 @@ export default function RoleSelect({ onRoleSelected }) {
             return;
         }
 
-        const latitud = position.lat;
-        const longitud = position.lng;
-
         setLoading(true);
         setError('');
         try {
-            await api.post('role/update/', { role, latitud, longitud });
-            localStorage.removeItem('needs_role');
-            localStorage.setItem('user_role', role);
-            onRoleSelected();
-            navigate('/dashboard');
+            await api.post('role/update/', { 
+                role: role,
+                latitud: role === 'proveedor' ? position.lat : null,
+                longitud: role === 'proveedor' ? position.lng : null
+            });
+            
+            // Si eligen rol por primera vez, pasan a estado pendiente
+            localStorage.clear();
+            alert("Tu cuenta ha sido enviada para aprobación. Un administrador debe aceptarte antes de poder ingresar al sistema.");
+            window.location.href = '/login';
         } catch (err) {
             setError(err.response?.data?.error || 'Error al actualizar el rol.');
         } finally {

@@ -184,7 +184,7 @@ export default function Usuarios() {
                                                 <td>
                                                     <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#eee', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                         {u.photo ? (
-                                                            <img src={u.photo} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                            <img src={u.photo.startsWith('/') ? `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}${u.photo}` : u.photo} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                                         ) : (
                                                             <Users size={20} color="#aaa" />
                                                         )}
@@ -201,7 +201,7 @@ export default function Usuarios() {
                                                 </td>
                                                 <td>
                                                     {u.profile && u.profile.latitud && u.profile.longitud && (
-                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '200px' }}>
+                                                        <div style={{ width: '200px', marginBottom: '0.5rem' }}>
                                                             {u.role === 'proveedor' ? (
                                                                 <div style={{ height: '120px', width: '100%', borderRadius: 'var(--radius-sm)', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
                                                                     <MapContainer center={[u.profile.latitud, u.profile.longitud]} zoom={13} style={{ height: '100%', width: '100%' }} zoomControl={false}>
@@ -214,35 +214,33 @@ export default function Usuarios() {
                                                                     📍 Ver en Maps
                                                                 </a>
                                                             )}
-                                                            
-                                                            {u.profile.estado_validacion === 'pendiente' ? (
-                                                                <div style={{ display: 'flex', gap: '0.4rem' }}>
-                                                                    <button className="btn btn-sm" style={{ padding: '0.25rem 0.6rem', fontSize: '0.7rem', background: 'var(--success)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', flex: 1 }}
-                                                                        onClick={async () => {
-                                                                            await api.post(`users/${u.id}/verificar/`);
-                                                                            loadData();
-                                                                        }}
-                                                                    >
-                                                                        Aprobar
-                                                                    </button>
-                                                                    <button className="btn btn-sm" style={{ padding: '0.25rem 0.6rem', fontSize: '0.7rem', background: 'var(--danger)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', flex: 1 }}
-                                                                        onClick={async () => {
-                                                                            if(confirm('¿Seguro que deseas rechazar y eliminar a este proveedor?')) {
-                                                                                await api.delete(`users/${u.id}/`);
-                                                                                loadData();
-                                                                            }
-                                                                        }}
-                                                                    >
-                                                                        Denegar
-                                                                    </button>
-                                                                </div>
-                                                            ) : (
-                                                                <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>Verificado</span>
-                                                            )}
                                                         </div>
                                                     )}
-                                                    {(!u.profile || u.profile.estado_validacion !== 'pendiente') && (
-                                                        <div style={{ display: 'flex', gap: '0.4rem', marginTop: u.profile && u.profile.latitud ? '0.5rem' : '0' }}>
+                                                    
+                                                    {u.profile?.estado_validacion === 'pendiente' ? (
+                                                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                                                            <button className="btn btn-sm" style={{ padding: '0.25rem 0.6rem', fontSize: '0.7rem', background: 'var(--success)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', flex: 1 }}
+                                                                onClick={async () => {
+                                                                    await api.post(`users/${u.id}/verificar/`);
+                                                                    loadData();
+                                                                }}
+                                                            >
+                                                                Aprobar
+                                                            </button>
+                                                            <button className="btn btn-sm" style={{ padding: '0.25rem 0.6rem', fontSize: '0.7rem', background: 'var(--danger)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', flex: 1 }}
+                                                                onClick={async () => {
+                                                                    if(confirm('¿Seguro que deseas rechazar y eliminar a este usuario?')) {
+                                                                        await api.delete(`users/${u.id}/`);
+                                                                        loadData();
+                                                                    }
+                                                                }}
+                                                            >
+                                                                Denegar
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                                                            <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>Verificado</span>
                                                             <button className="btn btn-sm btn-secondary" title="Editar" onClick={() => handleEdit(u)} style={{ padding: '0.3rem' }}><Edit2 size={14} /></button>
                                                             <button className="btn btn-sm" title="Eliminar" onClick={() => handleDelete(u.id)} style={{ padding: '0.3rem', background: 'var(--danger)', color: 'white', border: 'none' }}><Trash2 size={14} /></button>
                                                         </div>

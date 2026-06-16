@@ -60,51 +60,56 @@ export default function Reportes() {
                 };
             case 'entradas':
                 return {
-                    columns: ['ID', 'Material', 'Cantidad', 'Proveedor', 'Fecha', 'Usuario', 'Estado'],
+                    columns: ['ID', 'Material', 'Cantidad', 'Proveedor', 'Lote', 'Motivo', 'Fecha', 'Usuario', 'Estado'],
                     rows: data.map(e => [
                         e.id,
                         e.material_prima_nombre || `Mat. #${e.material_prima}`,
                         e.cantidad,
                         e.proveedor_nombre || '—',
-                        new Date(e.fecha_entrada).toLocaleString('es-CO'),
+                        e.lote || '—',
+                        e.motivo || '—',
+                        e.fecha_entrada ? new Date(e.fecha_entrada).toLocaleString('es-CO') : '—',
                         e.usuario_nombre || '—',
                         e.anulado ? 'ANULADA' : 'COMPLETADA',
                     ]),
                 };
             case 'salidas':
                 return {
-                    columns: ['ID', 'Material', 'Destino', 'Cantidad', 'Fecha', 'Usuario', 'Estado'],
+                    columns: ['ID', 'Material', 'Destino', 'Cantidad', 'Lote', 'Motivo', 'Fecha', 'Usuario', 'Estado'],
                     rows: data.map(s => [
                         s.id,
                         s.material_prima_nombre || `Mat. #${s.material_prima}`,
-                        s.destino,
+                        s.destino || '—',
                         s.cantidad,
-                        new Date(s.fecha_salida).toLocaleString('es-CO'),
+                        s.lote || '—',
+                        s.motivo || '—',
+                        s.fecha_salida ? new Date(s.fecha_salida).toLocaleString('es-CO') : '—',
                         s.usuario_nombre || '—',
                         s.anulado ? 'ANULADA' : 'COMPLETADA',
                     ]),
                 };
             case 'alertas':
                 return {
-                    columns: ['ID', 'Material', 'Mensaje', 'Fecha', 'Resuelta'],
+                    columns: ['ID', 'Tipo', 'Mensaje', 'Estado', 'Fecha'],
                     rows: data.map(a => [
                         a.id,
-                        a.material_prima_nombre || `Mat. #${a.material_prima}`,
+                        a.tipo || '—',
                         a.mensaje,
-                        new Date(a.fecha_creacion).toLocaleString('es-CO'),
-                        a.resuelta ? 'SÍ' : 'NO',
+                        a.estado === 'activa' ? 'ACTIVA' : 'LEÍDA',
+                        a.created_at ? new Date(a.created_at).toLocaleString('es-CO') : '—',
                     ]),
                 };
             case 'proveedores':
                 return {
-                    columns: ['ID', 'Empresa', 'Contacto', 'Email', 'Teléfono', 'Validado'],
+                    columns: ['ID', 'Empresa', 'RUC/NIT', 'Teléfono', 'Ciudad', 'Dirección', 'Estado'],
                     rows: data.map(p => [
                         p.id,
-                        p.nombre,
-                        p.contacto || '—',
-                        p.email || '—',
+                        p.empresa,
+                        p.ruc || '—',
                         p.telefono || '—',
-                        p.estado_validacion ? 'SÍ' : 'NO',
+                        p.ciudad || '—',
+                        p.direccion || '—',
+                        p.estado_validacion === 'verificado' ? 'VERIFICADO' : 'PENDIENTE',
                     ]),
                 };
             default:

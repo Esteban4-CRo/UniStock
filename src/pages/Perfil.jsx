@@ -123,7 +123,10 @@ export default function Perfil() {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             if (res.data && res.data.photo) {
-                localStorage.setItem('user_photo', res.data.photo);
+                let photoUrl = res.data.photo;
+                if (photoUrl.startsWith('/')) photoUrl = `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}${photoUrl}`;
+                localStorage.setItem('user_photo', photoUrl);
+                window.dispatchEvent(new Event('storage'));
             }
             setMessage({ type: 'success', text: 'Foto actualizada.' });
             loadProfile();
@@ -158,7 +161,7 @@ export default function Perfil() {
                     <div className="card-body" style={{ textAlign: 'center' }}>
                         <div style={{ position: 'relative', width: '120px', height: '120px', margin: '0 auto 1.5rem', borderRadius: '50%', background: 'var(--bg-hover)', border: '2px dashed var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                             {user.photo ? (
-                                <img src={user.photo} alt="Perfil" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <img src={user.photo.startsWith('/') ? `${import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'}${user.photo}` : user.photo} alt="Perfil" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             ) : (
                                 <User size={48} color="var(--text-muted)" />
                             )}

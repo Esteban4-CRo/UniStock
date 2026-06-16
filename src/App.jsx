@@ -205,7 +205,9 @@ function Auth({ setAuth }) {
     const [urlError, setUrlError] = useState('');
     useEffect(() => {
         const params = new URLSearchParams(location.search);
-        if (params.get('error')) {
+        if (params.get('error') === 'pending_approval') {
+            setUrlError('Tu cuenta está pendiente de aprobación por un administrador. No puedes ingresar aún.');
+        } else if (params.get('error')) {
             setUrlError('Ocurrió un error al autenticar con Google. Intenta nuevamente.');
         }
     }, [location.search]);
@@ -244,13 +246,17 @@ function Auth({ setAuth }) {
                 const me = meRes.data.find(u => u.username === loginUser);
                 if (me) {
                     const role = me.role || '';
+                    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000';
+                    let photoUrl = me.photo || '';
+                    if (photoUrl && photoUrl.startsWith('/')) photoUrl = `${backendUrl}${photoUrl}`;
+
                     if (['gerente', 'admin', 'almacenista', 'proveedor'].includes(role)) {
                         localStorage.setItem('user_role', role);
-                        localStorage.setItem('user_photo', me.photo || '');
+                        localStorage.setItem('user_photo', photoUrl);
                         localStorage.removeItem('needs_role');
                     } else {
                         localStorage.setItem('needs_role', 'true');
-                        localStorage.setItem('user_photo', me.photo || '');
+                        localStorage.setItem('user_photo', photoUrl);
                     }
                 } else {
                     localStorage.setItem('needs_role', 'true');
@@ -261,8 +267,9 @@ function Auth({ setAuth }) {
 
             setAuth(true);
             navigate('/dashboard');
-        } catch {
-            setLoginError('Usuario o contraseña incorrectos. Verifica e intenta de nuevo.');
+        } catch (err) {
+            const detail = err?.response?.data?.detail;
+            setLoginError(detail || 'Usuario o contraseña incorrectos. Verifica e intenta de nuevo.');
         } finally {
             setLoginLoading(false);
         }
@@ -287,7 +294,7 @@ function Auth({ setAuth }) {
                 latitud: regPosition ? regPosition[0] : null,
                 longitud: regPosition ? regPosition[1] : null
             });
-            setRegSuccess('¡Cuenta creada! Inicia sesión con tus credenciales.');
+            setRegSuccess('¡Cuenta creada! Tu solicitud está pendiente de aprobación por un administrador. Te notificaremos cuando sea aceptada.');
             setTab('login');
             setLoginUser(regUser);
             setRegName(''); setRegUser(''); setRegEmail(''); setRegPass(''); setRegPass2(''); setRegPosition(null);
