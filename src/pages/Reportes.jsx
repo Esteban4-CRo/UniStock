@@ -46,7 +46,7 @@ export default function Reportes() {
         switch (selectedType) {
             case 'inventario':
                 return {
-                    columns: ['ID', 'Nombre', 'Unidad', 'Stock Actual', 'Stock Mínimo', 'Estado'],
+                    columns: ['ID', 'Nombre', 'Unidad', 'Stock Actual', 'Stock Mínimo', 'Estado', 'Registrado Por', 'Fecha Creación'],
                     rows: data.map(m => [
                         m.id,
                         m.nombre,
@@ -54,29 +54,33 @@ export default function Reportes() {
                         m.cantidad,
                         m.stock_minimo,
                         parseFloat(m.cantidad) <= parseFloat(m.stock_minimo) ? 'STOCK BAJO' : 'NORMAL',
+                        m.usuario_nombre || '—',
+                        m.created_at ? new Date(m.created_at).toLocaleString('es-CO') : '—',
                     ]),
                 };
             case 'entradas':
                 return {
-                    columns: ['ID', 'Material', 'Cantidad', 'Proveedor', 'Fecha', 'Estado'],
+                    columns: ['ID', 'Material', 'Cantidad', 'Proveedor', 'Fecha', 'Usuario', 'Estado'],
                     rows: data.map(e => [
                         e.id,
                         e.material_prima_nombre || `Mat. #${e.material_prima}`,
                         e.cantidad,
                         e.proveedor_nombre || '—',
                         new Date(e.fecha_entrada).toLocaleString('es-CO'),
+                        e.usuario_nombre || '—',
                         e.anulado ? 'ANULADA' : 'COMPLETADA',
                     ]),
                 };
             case 'salidas':
                 return {
-                    columns: ['ID', 'Material', 'Destino', 'Cantidad', 'Fecha', 'Estado'],
+                    columns: ['ID', 'Material', 'Destino', 'Cantidad', 'Fecha', 'Usuario', 'Estado'],
                     rows: data.map(s => [
                         s.id,
                         s.material_prima_nombre || `Mat. #${s.material_prima}`,
                         s.destino,
                         s.cantidad,
                         new Date(s.fecha_salida).toLocaleString('es-CO'),
+                        s.usuario_nombre || '—',
                         s.anulado ? 'ANULADA' : 'COMPLETADA',
                     ]),
                 };

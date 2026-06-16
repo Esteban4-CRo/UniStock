@@ -50,8 +50,8 @@ export default function AgenteIA() {
             const entradas = eRes.data;
             const salidas = sRes.data;
 
-            const lowStock = materias.filter(m => parseFloat(m.stock_actual) <= parseFloat(m.stock_minimo));
-            const totalStock = materias.reduce((a, m) => a + parseFloat(m.stock_actual || 0), 0);
+            const lowStock = materias.filter(m => parseFloat(m.cantidad) <= parseFloat(m.stock_minimo));
+            const totalStock = materias.reduce((a, m) => a + parseFloat(m.cantidad || 0), 0);
             const volEntradas = entradas.filter(e => !e.anulado).reduce((a, e) => a + parseFloat(e.cantidad || 0), 0);
             const volSalidas = salidas.filter(s => !s.anulado).reduce((a, s) => a + parseFloat(s.cantidad || 0), 0);
             const avgStock = materias.length > 0 ? (totalStock / materias.length).toFixed(1) : 0;
@@ -84,7 +84,7 @@ export default function AgenteIA() {
     const buildSystemPrompt = () => {
         if (!inventoryCtx) return '';
         const { materias, alertas, entradas, salidas } = inventoryCtx;
-        const lowStock = materias.filter(m => parseFloat(m.stock_actual) <= parseFloat(m.stock_minimo));
+        const lowStock = materias.filter(m => parseFloat(m.cantidad) <= parseFloat(m.stock_minimo));
 
         const entradasRecientes = entradas.filter(e => !e.anulado).slice(0, 20);
         const salidasRecientes = salidas.filter(s => !s.anulado).slice(0, 20);
@@ -105,11 +105,11 @@ DATOS EN TIEMPO REAL DEL INVENTARIO:
 - Total salidas (no anuladas): ${salidas.filter(s => !s.anulado).length}
 
 MATERIAS CON STOCK BAJO (${lowStock.length}):
-${lowStock.map(m => `- ${m.nombre}: ${m.stock_actual} ${m.unidad_medida} (minimo: ${m.stock_minimo}) — DEFICIT: ${(parseFloat(m.stock_minimo) - parseFloat(m.stock_actual)).toFixed(1)}`).join('\n') || 'Ninguna'}
+${lowStock.map(m => `- ${m.nombre}: ${m.cantidad} ${m.unidad_medida} (minimo: ${m.stock_minimo}) — DEFICIT: ${(parseFloat(m.stock_minimo) - parseFloat(m.cantidad)).toFixed(1)}`).join('\n') || 'Ninguna'}
 
 INVENTARIO COMPLETO:
 ${materias.slice(0, 30).map(m => {
-    const actual = parseFloat(m.stock_actual);
+    const actual = parseFloat(m.cantidad);
     const minimo = parseFloat(m.stock_minimo);
     const cobertura = minimo > 0 ? ((actual / minimo) * 100).toFixed(0) : 'N/A';
     return `- ${m.nombre}: ${actual} ${m.unidad_medida} (min: ${minimo}) | Cobertura: ${cobertura}% | ${actual <= minimo ? 'CRITICO' : actual <= minimo * 1.5 ? 'ATENCION' : 'NORMAL'}`;
